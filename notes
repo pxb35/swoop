@@ -1,0 +1,14 @@
+Basic React App instructions:
+
+- to create a new app: npm create vite@lates
+  - enter the project name
+  - specify "react" when prompted
+  - specify "JavaScript" when prompted
+- cd into the project directory
+- to install dependencies: npm install
+- to open the project in VS Code: code .
+- once in VS Code, open a terminal window
+- in the terminal window, to start the server in a browser tab run: npm run dev
+- changes to the code will automatically be reflected in the browser tab
+- debugging can be done using the browser's developer tools (F12)
+- to stop the server, in the terminal window press: Ctrl + C

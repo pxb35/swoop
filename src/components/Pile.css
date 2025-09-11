@@ -1,0 +1,10 @@
+.animate-card {
+  transition: transform 2.4s ease, opacity 2.4s ease;
+  transform: scale(1);
+  opacity: 1;
+}
+
+.animate-card.entering {
+  transform: scale(1.2);
+  opacity: 0.5;
+}
