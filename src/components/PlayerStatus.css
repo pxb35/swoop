@@ -1,26 +1,8 @@
+/*
 .bot-status.active {
   border: 2px solid #00f;
   background-color: #eef;
 }
-
-.card {
-  margin: 0.2rem;
-  padding: 0.5rem 0.7rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #fff;
-  cursor: pointer;
-  user-select: none;
-}
-
-.card.selected {
-  border-color: #007bff;
-  background-color: #cce5ff;
-}
-
-.hidden {
-  display: none;
-} 
 
 .play-selected-button {
   margin-top: 0.5rem;
@@ -31,4 +13,4 @@
   color: white;
   cursor: pointer;
 }
-
+*/
