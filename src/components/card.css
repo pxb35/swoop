@@ -10,8 +10,37 @@
   box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
   cursor: pointer;
   user-select: none;
-  transition: transform 0.2s ease;
   float: left;
+  opacity: 1;
+}
+
+/*
+.undealt {
+  position: fixed;
+  Left: 0;
+  top: 0;
+  transition: transform .5s ease; 
+  animation: dealCard2 .5s ease-out forwards;
+}
+*/
+
+@keyframes dealCard2 {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(var(--dx), var(--dy)) scale(1.2);
+  } 
+  50% {
+    transform: translate(var(--dx), var(--dy)) scale(1.4);
+  } 
+  75% {
+    transform: translate(var(--dx), var(--dy)) scale(1.2);
+  } 
+  100% {
+    transform-origin: center;
+    transform: translate(var(--dx), var(--dy)) scale(1);
+  }
 }
 
 .player-hand .card,
@@ -35,9 +64,42 @@
 }
 
 .player-hand .card {
-  border-color: #ffc107;
-  box-shadow: 0 0 10px #ffc107;
+  border-color: #d6993e;
+  box-shadow: 0 0 10px #d6993e;
 }
+
+.player-hand .card.faceDown,
+.player-mystery .card.faceDown,
+.player-hand .card.faceDown {
+  border-color: white;
+  background-color: #d6993e;
+  box-shadow: 0 0 10px #d6993e;
+}
+
+.player-hand .card,
+.player-mystery .card,
+.player-faceup .card {
+  opacity: 1;
+}
+
+.card.notDealt {
+  transition: transform .1s ease;  /* was 0.5s  */
+  animation: dealCard2 .1s ease-out forwards; /* was 0.6s  */
+}
+
+.card-swoop {
+  height: 80px;
+  margin: 10px 15px;
+}
+
+/*
+.visible {
+   animation-name: fadeIn;
+      animation-duration: .5s; 
+      animation-timing-function: ease-in; 
+      animation-fill-mode: forwards; 
+}
+*/
 
 .card.showEdge {
     margin-right: -75px;
@@ -73,4 +135,14 @@
   transform: translate(-50%, -50%);
   font-size: 32px;
   font-weight: bold;
+}
+.bot-cards {
+    background-image: url(/swoop/public/bot.png);
+    background-size: 75px;
+    background-repeat: no-repeat;
+}
+
+.bot-cards strong span {
+  color: blue;
+  margin: 10px;
 }

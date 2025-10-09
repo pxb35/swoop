@@ -1,5 +1,4 @@
-
-export function createDeck(numPlayers) {
+export default function createDeck(numPlayers) {
   const deck = [];
   const numDecks = numPlayers < 5 ? 2 : numPlayers < 7 ? 3 : 4;
 
@@ -8,14 +7,14 @@ export function createDeck(numPlayers) {
     // Add 4 copies of ranks 1–13
     for (let rank = 1; rank <= 13; rank++) {
       for (let copy = 0; copy < 4; copy++) {
-        deck.push({rank: rank, deckIndex: deckIndex++});
+        deck.push({ rank: rank, deckIndex: deckIndex++});
       }
     }
 
     // Add 2 extra Jokers (rank 13)
-    
-    deck.push({rank: 13, deckIndex: deckIndex++});
-    deck.push({rank: 13, deckIndex: deckIndex++});
+
+    deck.push({ rank: 13, deckIndex: deckIndex++ });
+    deck.push({ rank: 13, deckIndex: deckIndex++ });
   }
   return shuffle(deck);
 }

@@ -1,6 +1,6 @@
 Basic React App instructions:
 
-- to create a new app: npm create vite@lates
+- to create a new app: npm create vite@latest
   - enter the project name
   - specify "react" when prompted
   - specify "JavaScript" when prompted

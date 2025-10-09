@@ -1,157 +1,84 @@
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import './playerStatus.css'
 import Card from './Card';
+import dealDeck from './dealUtils';
 
-export default function PlayerStatus({ player, playerIndex, name, handleCardClick, handlePlaySelected, selectedCards, handlePickUpPile }) {
+export default function PlayerStatus({ players, playerIndex, name, handleCardClick, handlePlaySelected, selectedCards, handlePickUpPile }) {
+  const player = players[0];
+  const cardRef = useRef(null);
 
-  const startX = useRef(null);
-  const startY = useRef(null);
+  console.log('player status');
 
-  const handleTouchStart = (e) => {
-    startX.current = e.touches[0].clientX;
-    startY.current = e.touches[0].clientY;
-  };
-
-  const handleTouchEnd = (e) => {
-    const endX = e.changedTouches[0].clientX 
-    const deltaX = Math.abs(startX.current - endX);
-    const endY = e.changedTouches[0].clientY;
-    const deltaY = Math.abs(startY.current - endY);
-
-    // any swipe from the card div that leaves the div and goes up more than 50 pixels
-    if (deltaY > 50 && (startY.current - endY) > Math.abs(startX.current - endX) * 0.2 ) {
-      handlePlaySelected(playerIndex); 
-    }
-  };
-
-  const handlePointerDown = (e) => {
-    startX.current = e.clientX;
-    startY.current = e.clientY;
-  };
-
-  const handlePointerUp = (e) => {
-    const endX = e.clientX;
-    const endY = e.clientY;
-    const deltaX = Math.abs(startX.current - e.clientX);
-    const deltaY = Math.abs(startY.current - e.clientY);
-
-    // any swipe from the card div that leaves the div and goes up more than 50 pixels
-    if (deltaY > 50 && (startY.current - endY) > Math.abs(startX.current - endX) * 0.2 ) {
-      handlePlaySelected(playerIndex); 
-    }
-  };
-
-  return (
-    <div className={"bot-status " + player.type}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-      onPointerDown={handlePointerDown}
-      onPointerUp={handlePointerUp} >
-
-      <strong>{name}</strong>
+  if (player) return (
+    <div id={"player-" + playerIndex }>
+      <strong>{player.name}</strong>
       
       <div className={'row'}>
         <div className={"player-actions"}>
         {player.type === 'human' ? (
+          <div>
           <div className="play-selected-cards">
             <button 
               onClick={() => handlePlaySelected(player.type)}
             >Play Selected</button>
           </div>
+          <div>
+            <button 
+              onClick={() => dealDeck(players)}
+            >Deal New Game</button>
+          </div>
+          </div>
         ) : null}      
     </div>
     </div>
 
-      <div className={'player-hand row player ' + player.position}>
-        <div>      
+      <div className={'player-hand row player reveal-container ' + player.position} >
+        <div className="d-flex justify-content-center">      
         {player.hand.map((card, index) => (
           <Card
             key={index}
             rank={card ? player.type !== 'human' ? ' ' : card.rank === 13 ? 'S' : card.rank : 'Empty'}
-            selected={selectedCards.includes(card)}
+            selected={selectedCards && selectedCards.includes(card)}
             showEdge={false}
             onClick={() => handleCardClick(card, player.type, "hand", playerIndex)}
+            faceDown={false}
+            ref={cardRef} 
           />
         ))}
       </div>
     </div>
-    <div className={'player-mystery row player ' + player.position}>
-      <div>      
-        {player.mystery.map((card, index) => (
-          <Card
-            key={index}
-            rank={card ? selectedCards.includes(card) ? card.rank === 13 ? 'S' : card.rank : '?' : 'Empty'}
-            selected={selectedCards.includes(card)}
-            showEdge={false}
-            onClick={() => handleCardClick(card, player.type, "mystery", playerIndex)}
-          />        
-        ))}
+    <div className="d-flex justify-content-left mystery-faceup-container">
+      <div className={'player-mystery row player reveal-container ' + player.position}>
+        <div className="d-flex justify-content-center">      
+          {player.mystery.map((card, index) => (
+            <Card
+              key={index}
+              rank={card ? selectedCards && selectedCards.includes(card) ? card.rank === 13 ? 'S' : card.rank : '?' : 'Empty'}
+              selected={selectedCards && selectedCards.includes(card)}
+              showEdge={false}
+              nClick={() => handleCardClick(card, player.type, "mystery", playerIndex)}
+              faceDown={selectedCards && selectedCards.includes(card) ? false : true}
+              ref={cardRef}  
+            />        
+          ))}
+        </div>
       </div>
-    </div>
-    <div className={'player-faceup rowplayer ' + player.position}>
-      <div>      
-        {player.faceUp.map((card, index) => (
-          <Card
-            key={index}
-            rank={card ? card.rank === 13 ? 'S' : card.rank : 'Empty'}
-            selected={selectedCards.includes(card)}
-            showEdge={false}
-            onClick={() => handleCardClick(card, player.type, "faceUp", playerIndex)}
-          />        
-        ))}
+      <div className={'player-faceup rowplayer reveal-container ' + player.position}>
+        <div className="d-flex justify-content-center">      
+          {player.faceUp.map((card, index) => (
+            <Card
+              key={index}
+              rank={card ? card.rank === 13 ? 'S' : card.rank : 'Empty'}
+              selected={selectedCards && selectedCards.includes(card)}
+              showEdge={false}
+              onClick={() => handleCardClick(card, player.type, "faceUp", playerIndex)}
+              faceDown={false}
+              ref={cardRef}  
+            />        
+          ))}
+        </div>
       </div>
-    </div>
-    
-    </div>
-  );
-}
-
-/*
-import React from 'react'
-import './playerStatus.css'
-import Card from './Card';
-
-export default function PlayerStatus({ player, playerIndex, name, handleCardClick, handlePlaySelected, selectedCards, handlePickUpPile }) {
-  return (
-    <div className="bot-status">
-      <strong>{name}</strong>
-      <div className="player-hand">
-        <div>      
-        {player.hand.map((card, index) => (
-          <Card card={card} key={index} selectedCards={selectedCards}  cardType="hand"
-            onClick={() => handleCardClick(card, player.type, "hand", playerIndex)} playerType={player.type} />        
-        ))}
-      </div>
-    </div>
-    <div className="player-mystery">
-      <div>      
-        {player.mystery.map((card, index) => (
-          <Card card={card} key={index} selectedCards={selectedCards} cardType="mystery"
-            onClick={() => handleCardClick(card, player.type, "mystery", playerIndex)}  playerType={player.type} />        
-        ))}
-      </div>
-    </div>
-    <div className="player-faceup">
-      <div>      
-        {player.faceUp.map((card, index) => (
-          <Card card={card} key={index} selectedCards={selectedCards}  cardType="faceUp"
-            onClick={() => handleCardClick(card, player.type, "faceup", playerIndex)}  playerType={player.type} />        
-        ))}
-      </div>
-    </div>
-    <div>
-        {player.type === 'human' ? (
-          <>
-            <button 
-              onClick={() => handlePlaySelected(player.type)}
-            >Play Selected</button>
-            <button 
-              onClick={() => handlePickUpPile(playerIndex)}
-            >Pick Up Pile</button>
-          </>
-        ) : null}      
     </div>
     </div>
   );
 }
-*/

@@ -1,16 +1,17 @@
-export function processPile(originalPile, newCards) {
-  
+import { useState, useEffect, useRef, useLayoutEffect } from 'react';
+
+export default function processPile(originalPile, newCards) {
   // assumes newCards are already validated
   if (newCards.length === 0) return originalPile;
-  if (newCards[newCards.length-1].rank === 13) {
+  if (newCards[newCards.length - 1].rank === 13) {
     return [];
   }
 
-  // if top 4 cares are the same rank, clear pile
+  // if top 4 cards are the same rank, clear pile
   const combinedPile = [...originalPile, ...newCards];
   if (combinedPile.length >= 4) {
     const topFour = combinedPile.slice(-4);
-    const allSameRank = topFour.every(card => card.rank === topFour[0].rank); 
+    const allSameRank = topFour.every((card) => card.rank === topFour[0].rank);
     if (allSameRank) {
       return [];
     } else {

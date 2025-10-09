@@ -33,6 +33,10 @@
   font-weight: bold;
 }
 
+.player-faceup {
+  position: absolute;
+}
+
 .pile-cards {
   max-height: 200px;
   min-width: 400px;
@@ -139,6 +143,76 @@
   opacity: 1;
   pointer-events: auto;
 }
+
+/* animate deal */
+
+@keyframes dealCard {
+  0% {
+    transform: translate(0, 0) scale(1);
+    transform-origin: center;
+    opacity: 0;
+  }
+  25% {
+    opacity: .25;
+    rotate: 90deg;
+    transform-origin: center;
+    transform: translate(var(--dx), var(--dy)) scale(1.2);
+  } 
+  50% {
+    opacity: .5;
+    rotate: 180deg;
+    transform-origin: center;
+    transform: translate(var(--dx), var(--dy)) scale(1.2);
+  } 
+  50% {
+    opacity: .75;
+    rotate: 270deg;
+    transform-origin: center;
+    transform: translate(var(--dx), var(--dy)) scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform-origin: center;
+    transform: translate(var(--dx), var(--dy)) scale(1);
+  }
+}
+
+.swoopCard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 70px;
+  height: 100px;
+  background: white;
+  border: 1px solid #333;
+  border-radius: 8px;
+  transition: transform .1s ease;  /* was 0.5s  */
+  animation: dealCard2 .1s ease-out forwards; /* was 0.6s  */
+}
+/*
+@keyframes revealLeftToRight {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.reveal-container {
+  overflow: hidden;
+  width: 100%;
+}
+
+.reveal-container > * {
+  width: 0;
+}
+
+.reveal-content {
+  width: 0;
+  animation: revealLeftToRight 3s forwards;
+}
+*/
 /*
 #root {
   max-width: 1280px;

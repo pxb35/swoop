@@ -1,19 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import './App.css';
-import { createDeck } from './components/deckUtils';
-import { processPile } from './components/pileUtils';
+import createDeck from './components/deckUtils';
+import processPile from './components/pileUtils';
+import moveDOMElement from './components/animationUtils';
+import selectTargetFromRange from './components/animationUtils';
 import { dealPlayers } from './components/dealPlayers';
+import dealDeck from './components/dealUtils';
 import PlayerStatus from './components/PlayerStatus';
 import Pile from './components/Pile';
 import LogPlays from './components/LogPlays';
 import { botTurn } from './components/botLogic';
 import CardTable from './components/CardTable';
 import CircularLayout from './components/CircularLayout';
+import RectangularLayout from './components/RectangularLayout';
 
 const numberOfPlayers = 5;
 const interactivePlayers = [0]; // Only the first player is human
 
-function App() {
+export default function App() {
   // Game state
   const [players, setPlayers] = useState([]);
   const [pile, setPile] = useState([]);
@@ -21,7 +25,12 @@ function App() {
   const [turnIndex, setTurnIndex] = useState(0);
   const [turnNmber, setTurnNumber] = useState(0);
   const [selectedCards, setSelectedCards] = useState([]);
-  ///const [topPileCards, setTopPileCards] = useState([]);
+  const [cardsDealt, setCardsDealt] = useState(false);
+
+  const [animatingCard, setAnimatingCard] = useState(null);
+  const [cardStyle, setCardStyle] = useState({});
+
+    ///const [topPileCards, setTopPileCards] = useState([]);
 /*
 
   // Bot setup
@@ -40,13 +49,12 @@ function App() {
     const deck = createDeck(numberOfPlayers);
     const dealtPlayers = dealPlayers(deck, numberOfPlayers, interactivePlayers);
     setPlayers(dealtPlayers);
-    
     setTimeout(() => {
-      const firstPlayer = parseInt(Math.random() * numberOfPlayers);
+      const firstPlayer = parseInt(Math.random() * dealtPlayers.length);
       setTurnIndex(firstPlayer);
       setTurnNumber(firstPlayer);
       setMoveLog([`Game started. Player ${firstPlayer} begins.`]);
-    }, 2000)
+    }, 1000)
   }, []);
     
   const handlePickUpPile = (playerIndex) => {
@@ -58,6 +66,7 @@ function App() {
     setPlayers(prev => {
       const updated = [...prev];
       const currentPlayer = { ...updated[playerIndex] };
+      console.log(currentPlayer);
       const newHand = [...currentPlayer.hand, ...pileCopy];
       if (currentPlayer.mystery.filter(c => selectedCards.includes(c)).length > 0) {
         newHand.push(...currentPlayer.mystery.filter(c => selectedCards.includes(c)));
@@ -226,87 +235,61 @@ useEffect(() => {
       }
     }   
   };
+  
+const botCardRef = useRef(null);
+const pileRef = useRef(null);
+
+useLayoutEffect(() => {
+  const start = botCardRef.current?.getBoundingClientRect();
+  const end = pileRef.current?.getBoundingClientRect();
+  // Store these for animation
+}, []);
+
+useEffect(() => {
+  if (animatingCard) {
+    const start = botCardRef.current?.getBoundingClientRect();
+    const end = pileRef.current?.getBoundingClientRect();
+
+    if (start && end) {
+      setCardStyle({
+        position: 'absolute',
+        top: start.top,
+        left: start.left,
+        transition: 'all 0.6s ease-in-out',
+      });
+
+      requestAnimationFrame(() => {
+        setCardStyle({
+          position: 'absolute',
+          top: end.top,
+          left: end.left,
+          transition: 'all 0.6s ease-in-out',
+        });
+      });
+    }
+  }
+}, [animatingCard]);
 
   if (!players || players.length === 0) {
+    console.log('app not loaded');
     return (<div>Loading players...</div>);
   } else {
+    console.log('app IS loaded');
     return (
-      <>
-      <CircularLayout players={players} selectedCards={selectedCards} handleCardClick={handleCardClick} handlePickUpPile={handlePickUpPile} handlePlaySelected={handlePlaySelected}/>  
-      <div className="pile-log">
-          <LogPlays moveLog={moveLog} />
-        </div>
-        <div className="bot-status">
-          <Pile pile={pile} handlePickUpPile={handlePickUpPile} playerIndex={turnIndex} isHuman={players[turnIndex].type === 'human'}/>
-        </div>
-        </>
-    )
-
-    /*
-    return (
-      <div class="container text-center">
-        <div class="row">
-          <div class="col">
-            1 of 3
-          </div>
-          <div class="col">
-            2 of 3
-          </div>
-          <div class="col">
-            3 of 3
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            1 of 2
-          </div>
-          <div class="col">
-            2 of 2
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            1 of 3
-          </div>
-          <div class="col">
-            2 of 3
-          </div>
-          <div class="col">
-            3 of 3
-          </div>
-        </div>
-      </div>
-    )
-*/
-  }
-}
-  
-export default App;
-
-    /*
-    return (
-      <div className="game-table">
-        <div className="pile-log">
-          <LogPlays moveLog={moveLog} />
-        </div>
-        <div className="bot-status">
-          <Pile pile={pile} />
-        </div>
-        <div className="players">
-          {players.map((player, i) => (
-            <PlayerStatus
-              playerIndex={i}
-              key={i}
-              player={player}
-              hand={player.hand}
-              faceUp={player.faceUp}
-              selectedCards={selectedCards}
-              handleCardClick={handleCardClick}
-              handlePlaySelected={handlePlaySelected}
-              handlePickUpPile={handlePickUpPile}
-            />
-          ))}
-        </div>
-      </div>
+      <div>
+        <RectangularLayout players={players} 
+                        pile={pile} 
+                        playerIndex={turnIndex} 
+                        selectedCards={selectedCards} 
+                        handleCardClick={handleCardClick} 
+                        handlePickUpPile={handlePickUpPile} 
+                        handlePlaySelected={handlePlaySelected}
+                        moveLog={moveLog}
+                        cardsDealt={cardsDealt}
+                        setCardsDealt={setCardsDealt}
+                    />
+      </div>  
     );
-    */
+  }
+ }
+  

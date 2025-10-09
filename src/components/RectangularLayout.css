@@ -1,0 +1,60 @@
+.rectangular-container {
+    width: 100vw;
+    height: 100vh;
+    padding: 20pxS;
+}
+
+.cardtable-top {
+    height: 25%;
+}
+
+.cardtable-bottom {
+    height: 35%;
+}
+
+.cardtable-center .table-sub-row {
+    height: 50%
+}
+
+.cardtable-center {
+    height: 40%;
+}
+
+.bot-cards {
+    transform: scale(0.7); 
+    transform-origin: top left; /* or center, depending on layout */
+}
+/*
+.player-count-5,
+.player_count-6,
+.player-count-7 {
+    background-color: white;
+}
+
+.player-space-0,
+.player-space-1,
+.player-space-2,
+.player-space-3,
+.player-space-4,
+.player-space-5,
+.player-space-6,
+.player-space-7 {
+    margin: auto;
+    display: block;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: 0px;
+    bottom: 25%;
+}
+
+.player-space-0 {
+    left: 25%;
+    bottom: 0px;
+}
+
+.player-space-1 {
+    left: 0px;
+    bottom: 33%;
+}
+*/

@@ -1,3 +1,15 @@
+.mystery-faceup-container {
+  margin-left: 60px;
+  min-height: 200px;
+}
+
+.player-hand,
+.player-mystery,
+.player-faceup {
+  min-height: 100px;
+}
+
+
 /*
 .bot-status.active {
   border: 2px solid #00f;
