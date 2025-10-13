@@ -3,14 +3,11 @@ import Card from './Card';
 
 export default function Pile({ pile, handlePickUpPile, players, playerIndex }) {
 
-  const pileRef = useRef(null);
-  const cardRef = useRef(null);
-
   console.log('pile');
   console.log(players);
   return (
     <div className={'pile-cards'}>     
-      <div ref={pileRef}>
+      <div id={'pileId'}>
         {pile.map((card, index) => (
           <Card
               key={index}
@@ -18,7 +15,7 @@ export default function Pile({ pile, handlePickUpPile, players, playerIndex }) {
               selected={false}
               showEdge={pile && index - pile.length < -5 }
               onClick={() => {}}
-              ref={cardRef}
+              deckIndex={card.deckIndex}
             />
         //<Card card={card} key={index} pileKey={pile && index - pile.length < -5 } selectedCards={[]} />        
         ))}

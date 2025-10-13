@@ -19,10 +19,10 @@
 .cardtable-center {
     height: 40%;
 }
-
+/*
 .bot-cards {
     transform: scale(0.7); 
-    transform-origin: top left; /* or center, depending on layout */
+    transform-origin: top left;
 }
 /*
 .player-count-5,

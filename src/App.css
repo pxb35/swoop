@@ -9,8 +9,9 @@
   font-family: Arial, sans-serif;
   background-color: #f9f9f9;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 16px;
 }
-
+/*
 .circle-container {
   position: relative;
   width: 100vw;
@@ -32,32 +33,47 @@
   justify-content: center;
   font-weight: bold;
 }
-
+*/
 .player-faceup {
   position: absolute;
 }
 
 .pile-cards {
-  max-height: 200px;
-  min-width: 400px;
   overflow-y: visible;
-  position: absolute;
-  top: 37%;
-  right: 30%
+  display: flex;
+  justify-content: center;
+}
+
+.pile-cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.vertically-content-center {
+  align-items: center;
+}
+
+.bot-cell-right,
+.bot-cell-left,
+.bot-cell-center {
+  position: relative;
+  display: block;
+  align-items: center;
 }
 
 .pile-log {
-  max-height: 200px;
+  max-height: 4rem;
   overflow-y: auto;
   position: absolute;
   background-color: white;
-  top: 10px;
-  left: 10px;
-  min-height: 300px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  top: .8rem;
+  left: .8rem;
+  min-height: 9rem;
+  border: .2em solid #ccc;
+  border-radius: .8px;
   padding: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  box-shadow: 0 .2em .4em rgba(0, 0, 0, 0.1); 
   font-size: 0.9rem;
   text-align: left;
   z-index: 10;
@@ -102,7 +118,7 @@
   bottom: -40px;
   left: 50%;
   transform: translateX(-50%);
-  padding: 0.3em 0.9em;
+  padding: 0.3rem 0.9rem;
   font-size: 0.9rem;
   background-color: #007bff;
   color: white;
@@ -120,23 +136,23 @@
 }
 
 .bot-status.bot {
-  transform: scale(0.7); /* 80% size */
+  transform: scale(1); /* 80% size */
   transform-origin: top left; /* or center, depending on layout */
 }
 
 .pick-up {
-  position: absolute;
+  position: relative;
   top: -50px;
   opacity: 0;
 }
 
 .pickup button {
-  padding: 0.3em 0.9em;
+  padding: 0.3rem 0.9rem;
 }
 
 .play-selected-cards button {
   margin-bottom: 7px;
-  padding: 0.3em 0.9em;
+  padding: 0.3rem 0.9rem;
 }
 
 .button-visible {
@@ -145,6 +161,11 @@
 }
 
 /* animate deal */
+
+@keyframes myAnimation {
+  from {background-color: red; transform: translateX(0) translateY(0) rotate(0deg)}
+  to {background-color: yellow;  transform: translateX(630px) translateY(50px) rotate(1020deg)}
+}
 
 @keyframes dealCard {
   0% {
@@ -217,7 +238,7 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2rrem;
   text-align: center;
 }
 

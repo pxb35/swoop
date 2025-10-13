@@ -3,11 +3,10 @@ import './playerStatus.css'
 import Card from './Card';
 import dealDeck from './dealUtils';
 
-export default function PlayerStatus({ players, playerIndex, name, handleCardClick, handlePlaySelected, selectedCards, handlePickUpPile }) {
+export default function PlayerStatus({ players, playerIndex, handleCardClick, handlePlaySelected, selectedCards }) {
   const player = players[0];
-  const cardRef = useRef(null);
-
-  console.log('player status');
+  
+  console.log('player status playerIndex: ' + playerIndex.toString());
 
   if (player) return (
     <div id={"player-" + playerIndex }>
@@ -42,7 +41,7 @@ export default function PlayerStatus({ players, playerIndex, name, handleCardCli
             showEdge={false}
             onClick={() => handleCardClick(card, player.type, "hand", playerIndex)}
             faceDown={false}
-            ref={cardRef} 
+            deckIndex={card.deckIndex}
           />
         ))}
       </div>
@@ -56,9 +55,9 @@ export default function PlayerStatus({ players, playerIndex, name, handleCardCli
               rank={card ? selectedCards && selectedCards.includes(card) ? card.rank === 13 ? 'S' : card.rank : '?' : 'Empty'}
               selected={selectedCards && selectedCards.includes(card)}
               showEdge={false}
-              nClick={() => handleCardClick(card, player.type, "mystery", playerIndex)}
+              onClick={() => handleCardClick(card, player.type, "mystery", playerIndex)}
               faceDown={selectedCards && selectedCards.includes(card) ? false : true}
-              ref={cardRef}  
+            deckIndex={card.deckIndex}
             />        
           ))}
         </div>
@@ -73,7 +72,7 @@ export default function PlayerStatus({ players, playerIndex, name, handleCardCli
               showEdge={false}
               onClick={() => handleCardClick(card, player.type, "faceUp", playerIndex)}
               faceDown={false}
-              ref={cardRef}  
+            deckIndex={card.deckIndex}
             />        
           ))}
         </div>

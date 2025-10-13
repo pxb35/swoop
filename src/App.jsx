@@ -2,8 +2,7 @@ import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import './App.css';
 import createDeck from './components/deckUtils';
 import processPile from './components/pileUtils';
-import moveDOMElement from './components/animationUtils';
-import selectTargetFromRange from './components/animationUtils';
+import { rerotatePileCards, tossCardsOnPile } from './components/animationUtils';
 import { dealPlayers } from './components/dealPlayers';
 import dealDeck from './components/dealUtils';
 import PlayerStatus from './components/PlayerStatus';
@@ -16,6 +15,7 @@ import RectangularLayout from './components/RectangularLayout';
 
 const numberOfPlayers = 5;
 const interactivePlayers = [0]; // Only the first player is human
+const turnDelay = 3000;
 
 export default function App() {
   // Game state
@@ -25,27 +25,15 @@ export default function App() {
   const [turnIndex, setTurnIndex] = useState(0);
   const [turnNmber, setTurnNumber] = useState(0);
   const [selectedCards, setSelectedCards] = useState([]);
-  const [cardsDealt, setCardsDealt] = useState(false);
-
   const [animatingCard, setAnimatingCard] = useState(null);
-  const [cardStyle, setCardStyle] = useState({});
+   
+  console.log('app start');
 
-    ///const [topPileCards, setTopPileCards] = useState([]);
-/*
-
-  // Bot setup
-  const [botHands, setBotHands] = useState(players.slice(1).map(p => p.hand));
-  const [botFaceUps, setBotFaceUps] = useState(players.slice(1).map(p => p.faceUp));
-  const [botMysteries, setBotMysteries] = useState(players.slice(1).map(p => p.mystery));
-
-  const [pile, setPile] = useState([]);
-  const [moveLog, setMoveLog] = useState([]);
-  const [turnIndex, setTurnIndex] = useState(0);
-  const [selectedCards, setSelectedCards] = useState([]);
-
-*/
   // Initialize deck and players once
   useEffect(() => {
+
+    console.log('deck');
+
     const deck = createDeck(numberOfPlayers);
     const dealtPlayers = dealPlayers(deck, numberOfPlayers, interactivePlayers);
     setPlayers(dealtPlayers);
@@ -58,6 +46,9 @@ export default function App() {
   }, []);
     
   const handlePickUpPile = (playerIndex) => {
+  
+    console.log('handlePickUpPile');
+
     if (pile.length === 0) return;
 
     const pileCopy = [...pile]; // snapshot before clearing
@@ -88,7 +79,37 @@ export default function App() {
     }, 1000);
   };
 
+  const handleCardClick = (card, playerType, cardType, playerIndex) => {
+
+    console.log('handleCardClick');
+
+    //if (playerType !== 'human') return;
+    if (cardType === 'mystery') {
+      if (selectedCards.includes(card)) {
+        setMoveLog(prev => [...prev, 'You cannot deselect a mystery card']);
+        return;
+      } else {
+        // can't reveal more than one mystery card at a time
+        if (selectedCards.filter(c => playerIndex === turnIndex && players[turnIndex].mystery.includes(c)).length > 0) {
+          setMoveLog(prev => [...prev, 'You can only reveal one mystery card at a time']);
+          return;
+        }
+        setMoveLog(prev => [...prev, 'You have revealed a mystery card!']);
+        setSelectedCards([...selectedCards, card]);
+      }
+    } else {
+     if (selectedCards.includes(card)) {
+        setSelectedCards(selectedCards.filter(c => c !== card));
+      } else {
+        setSelectedCards([...selectedCards, card]);
+      }
+    }   
+  };
+  
   const handlePlaySelected = () => {
+    
+    console.log('handlePlaySelected');
+
     if (selectedCards.length === 0) return;
 
     const top = pile[pile.length - 1];
@@ -126,35 +147,17 @@ export default function App() {
     setPlayers(updatedPlayers);
 
     setSelectedCards([]);
-    // don't advance turn if pile was cleared - go again 
-    setTurnIndex((prev) => (prev + (updatedPile.length === 0 ? players.length : 1)) % players.length); // Optional turn rotation
-    setTurnNumber((prev) => prev + 1);
+      setTimeout(() => {
+        // don't advance turn if pile was cleared - go again 
+        setTurnIndex((prev) => (prev + (updatedPile.length === 0 ? players.length : 1)) % players.length); // Optional turn rotation
+        setTurnNumber((prev) => prev + 1);
+      }, turnDelay);
   };
 
-/////////
-/*
-const [progress, setProgress] = useState(0);
-const [status, setStatus] = useState('Starting...');
-
 useEffect(() => {
-  let step = 0;
-  const steps = ['Loading deck...', 'Dealing cards...', 'Shuffling...', 'Ready!'];
+  
+  console.log('useEffect - turn processing');
 
-  const timer = setInterval(() => {
-    setStatus(steps[step]);
-    setMoveLog(prev => [...prev, steps[step]]);
-    setProgress(step);
-    step++;
-
-    if (step >= steps.length) clearInterval(timer);
-  }, 1000);
-
-  return () => clearInterval(timer);
-}, [pile]);
-*/
-////////
-
-useEffect(() => {
   if (players.length === 0) return;
   if (players[turnIndex].type === "human") return;
 
@@ -174,15 +177,24 @@ useEffect(() => {
         newHand.push(...currentPlayer.mystery.filter(c => selectedCards.includes(c)));
         currentPlayer.mystery = currentPlayer.mystery.filter(c => !selectedCards.includes(c));
       }
-      updated[botId] = {
-        ...currentPlayer,
-        hand: newHand,
-      };
+      updated[botId] = {...currentPlayer, hand: newHand,  };
       return updated;
     });
     setPile([]);
 
   } else if (move.action === 'play') {
+    // animation
+    //rerotatePileCards('pileId', 3);
+    //tossCardsOnPile(move.cards, 'pileId');
+    move.cards.forEach((card, index) => {
+      const cardDOMId = document.getElementById('card-' + card.deckIndex.toString())
+      cardDOMId.click();
+    });
+    setTimeout(() => {
+      handlePlaySelected();
+      setSelectedCards([]);
+  }, 3000);
+
     setMoveLog(prev => [...prev, `Bot ${turnIndex} played ${move.cards.length} x ${move.cards[0].rank}`]);
     const updatedPile = processPile(pile, move.cards);
     if (updatedPile.length === 0) {
@@ -208,67 +220,9 @@ useEffect(() => {
   setTimeout(() => {
     setTurnIndex(nextTurn);
     setTurnNumber(prev => prev + 1);
-  }, 1000);
+  }, turnDelay);
   
 }, [turnNmber]);
-
-  const handleCardClick = (card, playerType, cardType, playerIndex) => {
-    if (playerType !== 'human') return;
-    if (cardType === 'mystery') {
-      if (selectedCards.includes(card)) {
-        setMoveLog(prev => [...prev, 'You cannot deselect a mystery card']);
-        return;
-      } else {
-        // can't reveal more than one mystery card at a time
-        if (selectedCards.filter(c => playerIndex === turnIndex && players[turnIndex].mystery.includes(c)).length > 0) {
-          setMoveLog(prev => [...prev, 'You can only reveal one mystery card at a time']);
-          return;
-        }
-        setMoveLog(prev => [...prev, 'You have revealed a mystery card!']);
-        setSelectedCards([...selectedCards, card]);
-      }
-    } else {
-     if (selectedCards.includes(card)) {
-        setSelectedCards(selectedCards.filter(c => c !== card));
-      } else {
-        setSelectedCards([...selectedCards, card]);
-      }
-    }   
-  };
-  
-const botCardRef = useRef(null);
-const pileRef = useRef(null);
-
-useLayoutEffect(() => {
-  const start = botCardRef.current?.getBoundingClientRect();
-  const end = pileRef.current?.getBoundingClientRect();
-  // Store these for animation
-}, []);
-
-useEffect(() => {
-  if (animatingCard) {
-    const start = botCardRef.current?.getBoundingClientRect();
-    const end = pileRef.current?.getBoundingClientRect();
-
-    if (start && end) {
-      setCardStyle({
-        position: 'absolute',
-        top: start.top,
-        left: start.left,
-        transition: 'all 0.6s ease-in-out',
-      });
-
-      requestAnimationFrame(() => {
-        setCardStyle({
-          position: 'absolute',
-          top: end.top,
-          left: end.left,
-          transition: 'all 0.6s ease-in-out',
-        });
-      });
-    }
-  }
-}, [animatingCard]);
 
   if (!players || players.length === 0) {
     console.log('app not loaded');
@@ -285,8 +239,6 @@ useEffect(() => {
                         handlePickUpPile={handlePickUpPile} 
                         handlePlaySelected={handlePlaySelected}
                         moveLog={moveLog}
-                        cardsDealt={cardsDealt}
-                        setCardsDealt={setCardsDealt}
                     />
       </div>  
     );
