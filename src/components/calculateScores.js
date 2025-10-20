@@ -2,6 +2,7 @@ export default function calculateScores(players) {
   let returnScores = [];
   let lowestScore = 9999;
   let lowestScorePlayerIndex = -1;
+  const maxScore = 500;
   let gameOver = false;
   for (let j = 0; j < players.length; j++) {
     let playerPoints = 0;
@@ -23,7 +24,7 @@ export default function calculateScores(players) {
       lowestScore = totalScore;
       lowestScorePlayerIndex = j;
     }
-    if (totalScore > 49) gameOver = true;
+    if (totalScore >= maxScore) gameOver = true;
 
     returnScores.push({
       roundScore: playerPoints,

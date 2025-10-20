@@ -6,10 +6,11 @@ import processPile from './components/pileUtils';
 import { dealPlayers } from './components/dealPlayers';
 import { botTurn } from './components/botLogic';
 import RectangularLayout from './components/RectangularLayout';
+import tossCardsOnPile from './components/animationUtils';  
 
-const numberOfPlayers = 4;
+const numberOfPlayers = 5
 const interactivePlayers = [0]; // Only the first player is human
-const turnDelay = 3000;
+const turnDelay = 500;
 const firstPlayer = Math.floor(Math.random() * numberOfPlayers);
 
 export default function App() {
@@ -52,9 +53,11 @@ export default function App() {
     if (players[turnIndex].hand.length === 0 && players[turnIndex].faceUp.length === 0 && players[turnIndex].mystery.length === 0) {
       setMoveLog(prev => [...prev, `Player ${turnIndex} has won the round!`]);
       // if I use a function, the assignment should be sync
-      setGameOver(function() {
-        return true;
-      });
+      setTimeout(() => {
+        setGameOver(function() {
+         return true;
+        });
+      }, turnDelay);
     } else {
       
       console.log('pile length: ' + pile.length.toString() + ' players len: ' + players.length.toString() + (pilePicked ? ' pile picked' : ' pile NOT picked')); 
@@ -96,7 +99,7 @@ useEffect(() => {
     //return updated;
   } else if (move.action === 'play') {
     // animation
-    ///tossCardsOnPile(move.cards, 'pileId');
+    tossCardsOnPile(move.cards, 'pileId');
     //for (let i=0; i<move.cards.length; i++) {
       //const cardDOMId = document.getElementById('card-' + move.cards[i].deckIndex.toString());
       
@@ -110,7 +113,9 @@ useEffect(() => {
 
     // add cards to selected list
     const updateSelected = [...move.cards];
-    setSelectedCards(updateSelected);
+    setTimeout(() => {
+      setSelectedCards(updateSelected);
+    }, turnDelay / 1.2);
   } 
   
 }, [turnNumber]);
@@ -226,6 +231,7 @@ useEffect(() => {
         updatedPlayers[i]['hand'].sort((a, b) => a.rank - b.rank);
     }
     
+    /*
     //----------  added this to test ---------
     cardIndex = 0;
     for (let i = 0; i < updatedPlayers.length; i++) {
@@ -238,6 +244,7 @@ useEffect(() => {
         }
     }
     // ------- end of test section ----------
+    */
 
     setPlayers(updatedPlayers)
     setPile([]);
@@ -271,6 +278,9 @@ useEffect(() => {
       return;
     }
 
+    setPilePicked(false);
+    
+    // Add selected cards to pile
     const updatedPile = processPile(pile, selectedCards);
     setPile(updatedPile);
     setMoveLog(prev => [...prev, 'Player ' + turnIndex + ' played ' + selectedCards.length.toString() + ' x ' + (selectedCards[0].rank === 13 ? 'swoop' : selectedCards[0].rank.toString())]);

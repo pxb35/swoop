@@ -7,22 +7,24 @@ export function moveDOMElement(element, targetLocation, targetRotation) {
 
   const animation = element.animate(
     [
-      { scale: 1, rotate: "0deg" },
-      { scale: 1 },
-      { scale: 1 },
-      { scale: 1 },
-      { scale: 1 },
-      { scale: 1 },
-      { scale: 1, opacity: 1 },
+      { rotate: "0deg", scale: 1 },
+      { rotate: "90deg", scale: 1.2 },
+      { rotate: "180deg", scale: 1.5 },
+      { rotate: "270deg", scale: 1.2 },
+      { rotate: "330deg", scale: 1.1 },
       {
         translate: offsetX.toString() + "px " + offsetY.toString() + "px",
-        scale: 1,
-        opacity: 0,
         rotate: "360deg",
+        scale: 1,
       },
+      //translate: offsetX.toString() + "px " + offsetY.toString() + "px",
+      //scale: 1,
+      //opacity: 0,
+      //rotate: "360deg",
+      //},
     ],
     {
-      duration: 2000,
+      duration: 700,
       delay: 0,
       easing: "ease-in-out",
       fill: "forwards",
@@ -85,16 +87,16 @@ export function alignTopCards(targetLocation, numberOfCards) {
 
     const animation = cards[i].animate(
       [
-        { rotate: "0deg", scale: 1 },
-        { rotate: "0deg", scale: 1 },
+        { rotate: "0deg", scale: 1, background: "orange", scale: 1 },
+        { rotate: "0deg", scale: 1, background: "orange", scale: 1 },
         {
           translate: (offsetX + i * 25).toString() + "px " + offsetY + "px",
-          rotate: "0deg",
+          rotate: "360deg",
         },
       ],
       {
-        duration: 1000,
-        delay: 3000,
+        duration: 4000,
+        delay: 500,
         easing: "ease-in-out",
         fill: "forwards",
       }
