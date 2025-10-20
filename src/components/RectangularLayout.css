@@ -19,6 +19,47 @@
 .cardtable-center {
     height: 40%;
 }
+
+.log-container,
+.scores-container {
+    max-height: 70%;
+    justify-content: right;
+    text-align: right;
+    align-content: baseline;
+    padding: 4em;
+}
+
+.log-container {
+    justify-content: left;
+    text-align: left;
+    padding: 3.5em;;
+}
+
+.game-over {
+    position: absolute;
+    visibility: hidden;
+    background-color: white;
+    border: 2px solid black;
+    top: 40vh;
+    width: fit-content;
+    min-width: 400px;
+    padding: 20px;
+    justify-self: center;
+}
+
+.new-round-visible,
+.popup-visible {
+    visibility: visible;
+}
+
+.new-round-not-visible {
+    visibility: hidden;
+}
+
+.button-group {
+    display: flex;
+}
+
 /*
 .bot-cards {
     transform: scale(0.7); 

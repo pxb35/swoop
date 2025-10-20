@@ -12,12 +12,10 @@ const Card = ({ rank, deckIndex, selected, showEdge, className = '', onClick, fa
     className
   ].join(' ').trim();
 
-  console.log('deckIndex: ' + deckIndex.toString());
-
-if (faceDown) {
+if (faceDown && !selected) {
     return (
       <div id={'card-' + deckIndex} className={cardClasses} onClick={onClick}>
-        <img src='/swoop/public/swoop.png' className='card-swoop'></img>
+        <img src='/swoop/swoop.png' className='card-swoop'></img>
       </div>
     );
   } else {}

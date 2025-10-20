@@ -102,7 +102,7 @@ export function alignTopCards(targetLocation, numberOfCards) {
   }
 }
 
-export function tossCardsOnPile(cards, pileIdStr) {
+export default function tossCardsOnPile(cards, pileIdStr) {
   const offset = 100;
   const pile = document.getElementById(pileIdStr);
   const pileRect = pile.getBoundingClientRect();

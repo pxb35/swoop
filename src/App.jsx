@@ -1,115 +1,260 @@
-import { useState, useEffect, useRef, useLayoutEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './App.css';
-import createDeck from './components/deckUtils';
+import createDeck, { shuffle } from './components/deckUtils';
+import calculateScores from './components/calculateScores';
 import processPile from './components/pileUtils';
-import { rerotatePileCards, tossCardsOnPile } from './components/animationUtils';
 import { dealPlayers } from './components/dealPlayers';
-import dealDeck from './components/dealUtils';
-import PlayerStatus from './components/PlayerStatus';
-import Pile from './components/Pile';
-import LogPlays from './components/LogPlays';
 import { botTurn } from './components/botLogic';
-import CardTable from './components/CardTable';
-import CircularLayout from './components/CircularLayout';
 import RectangularLayout from './components/RectangularLayout';
 
-const numberOfPlayers = 5;
+const numberOfPlayers = 4;
 const interactivePlayers = [0]; // Only the first player is human
 const turnDelay = 3000;
+const firstPlayer = Math.floor(Math.random() * numberOfPlayers);
 
 export default function App() {
   // Game state
   const [players, setPlayers] = useState([]);
   const [pile, setPile] = useState([]);
   const [moveLog, setMoveLog] = useState([]);
-  const [turnIndex, setTurnIndex] = useState(0);
-  const [turnNmber, setTurnNumber] = useState(0);
+  const [turnIndex, setTurnIndex] = useState(firstPlayer);
+  const [turnNumber, setTurnNumber] = useState(firstPlayer);
   const [selectedCards, setSelectedCards] = useState([]);
-  const [animatingCard, setAnimatingCard] = useState(null);
-   
-  console.log('app start');
+  const [pilePicked, setPilePicked] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
+  const [ignoreEvents, setIgnoreEvents] = useState(false);
+  //const [showPopup, setShowPopup] = useState(false);
 
-  // Initialize deck and players once
+  const handleClosePopup = () => {
+    setGameOver(false);
+  }
+
+  // Initialize deck and players -runs once
   useEffect(() => {
-
-    console.log('deck');
+    if (ignoreEvents) return;
 
     const deck = createDeck(numberOfPlayers);
     const dealtPlayers = dealPlayers(deck, numberOfPlayers, interactivePlayers);
+    console.log(dealtPlayers);
     setPlayers(dealtPlayers);
-    setTimeout(() => {
-      const firstPlayer = parseInt(Math.random() * dealtPlayers.length);
-      setTurnIndex(firstPlayer);
-      setTurnNumber(firstPlayer);
-      setMoveLog([`Game started. Player ${firstPlayer} begins.`]);
-    }, 1000)
+
+    setMoveLog([`Game started. Player ${firstPlayer} begins.`]);
+    setTurnIndex(firstPlayer);
+    setTurnNumber(firstPlayer);
+
   }, []);
-    
+  
+  // whenever the player object changes
+  useEffect(() => {
+    if (ignoreEvents) return;
+    if (!players || players.length === 0) return;
+
+    if (players[turnIndex].hand.length === 0 && players[turnIndex].faceUp.length === 0 && players[turnIndex].mystery.length === 0) {
+      setMoveLog(prev => [...prev, `Player ${turnIndex} has won the round!`]);
+      // if I use a function, the assignment should be sync
+      setGameOver(function() {
+        return true;
+      });
+    } else {
+      
+      console.log('pile length: ' + pile.length.toString() + ' players len: ' + players.length.toString() + (pilePicked ? ' pile picked' : ' pile NOT picked')); 
+
+      console.log('1 turn index and number: ' + turnIndex.toString() + ' / ' + turnNumber.toString());
+      //setTurnIndex((prev) => (prev + ((pile.length === 0 && !pilePicked) ? players.length : 1)) % players.length); // Optional turn rotation
+      if (pile.length === 0 && !pilePicked) {
+        setTurnIndex((prev) => prev % players.length); // same player goes again
+      } else {
+        setTurnIndex((prev) => (prev + 1) % players.length );
+      }
+      setTimeout(() => {
+        setTurnNumber((prev) => prev + 1);
+      }, turnDelay);
+      
+      console.log('2 turn index and number: ' + turnIndex.toString() + ' / ' + turnNumber.toString());
+    }
+  }, [players]);
+
+  // run when turn number changes - bot logic
+useEffect(() => {
+  if (ignoreEvents) return;
+  
+  console.log('3 turn index and number: ' + turnIndex.toString() + ' / ' + turnNumber.toString());
+  setSelectedCards([]);
+  if (players.length === 0) return;
+  if (!turnIndex) return;
+  if (players[turnIndex].type === "human") return;
+
+  const botId = turnIndex;
+  const botHand = players[botId];
+  const move = botTurn(botHand, pile);
+  let samePlayer = false;
+
+  setPilePicked(false);
+  if (move.action === 'pickup') {
+    setPilePicked(true);
+    const updated = handlePickUpPile(turnIndex);
+    //return updated;
+  } else if (move.action === 'play') {
+    // animation
+    ///tossCardsOnPile(move.cards, 'pileId');
+    //for (let i=0; i<move.cards.length; i++) {
+      //const cardDOMId = document.getElementById('card-' + move.cards[i].deckIndex.toString());
+      
+      //console.log('move cards:' + move.cards.length);
+      
+      //cardDOMId.click();
+    //}
+    //setTimeout(() => {
+    //  handlePlaySelected();
+    //}, 3000);
+
+    // add cards to selected list
+    const updateSelected = [...move.cards];
+    setSelectedCards(updateSelected);
+  } 
+  
+}, [turnNumber]);
+
+// run when selected cards change
+useEffect(() => {
+  if (ignoreEvents) return;
+  if (players && players.length > 0 && players[turnIndex].type === "human") return;
+  if (selectedCards && selectedCards.length > 0) handlePlaySelected();
+}, [selectedCards]);
+
   const handlePickUpPile = (playerIndex) => {
   
-    console.log('handlePickUpPile');
-
     if (pile.length === 0) return;
 
     const pileCopy = [...pile]; // snapshot before clearing
 
-    setMoveLog(prev => [...prev, `Player picked up the pile`]);
+    console.log('Player ' + playerIndex.toString() + ' is picking up the pile');
+    setMoveLog(prev => [...prev, 'Player ' + playerIndex.toString() + ' picked up the pile']);
     setPlayers(prev => {
       const updated = [...prev];
       const currentPlayer = { ...updated[playerIndex] };
-      console.log(currentPlayer);
       const newHand = [...currentPlayer.hand, ...pileCopy];
+
+      // move the revealed mystery card (if there is one) to the players hand
       if (currentPlayer.mystery.filter(c => selectedCards.includes(c)).length > 0) {
         newHand.push(...currentPlayer.mystery.filter(c => selectedCards.includes(c)));
         currentPlayer.mystery = currentPlayer.mystery.filter(c => !selectedCards.includes(c));
       }
-      newHand.sort((a, b) => a.rank - b.rank);
-      updated[playerIndex] = {
-        ...currentPlayer,
-        hand: newHand,
-      };
+
+      // only sort for the human player
+      if (currentPlayer.type === 'human') {
+        newHand.sort((a, b) => a.rank - b.rank);
+      }
+      updated[playerIndex] = { ...currentPlayer, hand: newHand,};
+      setPile([]); // clear pile
+      
+      setSelectedCards([]);
+      setPilePicked(true);
+
+      console.log(updated);
       return updated;
     });
     
-    setPile([]); // clear pile
-    setSelectedCards([]);
-    setTimeout(() => {
-      setTurnIndex((prev) => (prev + 1) % players.length);
-      setTurnNumber((prev) => prev + 1);
-    }, 1000);
   };
 
-  const handleCardClick = (card, playerType, cardType, playerIndex) => {
+  const handleCardClick = (card, player) => {
 
-    console.log('handleCardClick');
+    // no selecting another person's cards
+    if (players[turnIndex] !== player) {
+      setMoveLog(prev => [...prev, 'What do you think you are doing?']);
+      return;
+    }
 
-    //if (playerType !== 'human') return;
-    if (cardType === 'mystery') {
-      if (selectedCards.includes(card)) {
+    // see if the user is selecting or de-selecting a mystery card
+    const updatedSelected = [...selectedCards];
+    if (player.mystery.includes(card)) {
+      if (updatedSelected.includes(card)) {
         setMoveLog(prev => [...prev, 'You cannot deselect a mystery card']);
         return;
       } else {
         // can't reveal more than one mystery card at a time
-        if (selectedCards.filter(c => playerIndex === turnIndex && players[turnIndex].mystery.includes(c)).length > 0) {
+        if (updatedSelected.filter(c => player.mystery.includes(c)).length > 0) {
           setMoveLog(prev => [...prev, 'You can only reveal one mystery card at a time']);
+          return;
+        } 
+        // you can't reveal a mystery card after selecting another card
+        if (updatedSelected.length > 0) {
+          setMoveLog(prev => [...prev, "You can't reveal a mystery card after selecting another card"]);
           return;
         }
         setMoveLog(prev => [...prev, 'You have revealed a mystery card!']);
-        setSelectedCards([...selectedCards, card]);
+        setSelectedCards([...updatedSelected, card]);
       }
     } else {
-     if (selectedCards.includes(card)) {
-        setSelectedCards(selectedCards.filter(c => c !== card));
+      if (updatedSelected.includes(card)) {
+        // unpick a card
+        setSelectedCards(updatedSelected.filter(c => c !== card));
       } else {
-        setSelectedCards([...selectedCards, card]);
+        setSelectedCards([...updatedSelected, card]);
       }
-    }   
-  };
-  
+    }
+  }
+
+  const handleNewRound = (wholeNewGame) => {
+    setIgnoreEvents(true);
+    //clear the cards
+    let updatedPlayers = [...players];
+    const deck = createDeck(numberOfPlayers);
+    let cardIndex = 0;
+    
+    for (let i = 0; i < updatedPlayers.length; i++) {
+        updatedPlayers[i]['hand'] = [];
+        updatedPlayers[i]['faceUp'] = [];
+        updatedPlayers[i]['mystery'] = [];
+        updatedPlayers[i]['roundScore'] = 0;
+        updatedPlayers[i]['winner'] = false;
+        if (wholeNewGame) updatedPlayers[i]['totalScore'] = 0;
+
+        // use a new deck
+        for (let j = 0; j < 4; j++) {
+           updatedPlayers[i]['mystery'][j] = deck[cardIndex];
+           cardIndex++;
+        }
+        for (let j = 0; j < 4; j++) {
+           updatedPlayers[i]['faceUp'][j] = deck[cardIndex];
+           cardIndex++;
+        }
+        for (let j = 0; j < 11; j++) {
+            updatedPlayers[i]['hand'][j] = deck[cardIndex];
+            cardIndex++;
+        }
+        updatedPlayers[i]['hand'].sort((a, b) => a.rank - b.rank);
+    }
+    
+    //----------  added this to test ---------
+    cardIndex = 0;
+    for (let i = 0; i < updatedPlayers.length; i++) {
+        updatedPlayers[i]['hand'] = [];
+        updatedPlayers[i]['faceUp'] = [];
+        updatedPlayers[i]['mystery'] = [];
+        for (let j=0; j<2; j++) {
+            updatedPlayers[i]['hand'][j] = deck[cardIndex];
+            cardIndex++;
+        }
+    }
+    // ------- end of test section ----------
+
+    setPlayers(updatedPlayers)
+    setPile([]);
+    setMoveLog([]);
+    setSelectedCards([]);
+    setPilePicked(false);
+    setGameOver(false);
+    setIgnoreEvents(false);
+
+    const newFirstPlayer = Math.floor(Math.random() * numberOfPlayers);
+    setMoveLog([`Game started. Player ${newFirstPlayer} begins.`]);
+    setTurnIndex(newFirstPlayer);
+    //setTurnNumber(newFirstPlayer);
+  }
+
   const handlePlaySelected = () => {
     
-    console.log('handlePlaySelected');
-
     if (selectedCards.length === 0) return;
 
     const top = pile[pile.length - 1];
@@ -127,11 +272,9 @@ export default function App() {
     }
 
     const updatedPile = processPile(pile, selectedCards);
-    //const updatedPile = [...pile, ...selectedCards];
     setPile(updatedPile);
-    //setTopPileCards(updatedPile);
-    //setTopPileCards(updatedPile.slice(-4));
-    setMoveLog(prev => [...prev, `Player played ${selectedCards.length} x ${selectedCards[0].rank}`]);
+    setMoveLog(prev => [...prev, 'Player ' + turnIndex + ' played ' + selectedCards.length.toString() + ' x ' + (selectedCards[0].rank === 13 ? 'swoop' : selectedCards[0].rank.toString())]);
+    console.log('Player ' + turnIndex + ' played ' + selectedCards.length.toString() + ' x ' + (selectedCards[0].rank === 13 ? 'swoop' : selectedCards[0].rank.toString()));
 
     // Update player hand and faceUp
     const updatedPlayers = [...players];
@@ -140,95 +283,24 @@ export default function App() {
     currentPlayer.faceUp = currentPlayer.faceUp.filter(c => !selectedCards.includes(c));
     currentPlayer.mystery = currentPlayer.mystery.filter(c => !selectedCards.includes(c));
     if (currentPlayer.hand.length === 0 && currentPlayer.faceUp.length === 0 && currentPlayer.mystery.length === 0) {
-      setMoveLog(prev => [...prev, `Player ${turnIndex} has won the game!`]);
-      // Game over logic can be added here
-    } 
-    updatedPlayers[turnIndex] = currentPlayer;
-    setPlayers(updatedPlayers);
-
-    setSelectedCards([]);
-      setTimeout(() => {
-        // don't advance turn if pile was cleared - go again 
-        setTurnIndex((prev) => (prev + (updatedPile.length === 0 ? players.length : 1)) % players.length); // Optional turn rotation
-        setTurnNumber((prev) => prev + 1);
-      }, turnDelay);
-  };
-
-useEffect(() => {
-  
-  console.log('useEffect - turn processing');
-
-  if (players.length === 0) return;
-  if (players[turnIndex].type === "human") return;
-
-  const botId = turnIndex;
-  const botHand = players[botId];
-  const pileTop = pile[pile.length - 1];
-  const move = botTurn(botHand, pileTop, pile);
-  let samePlayer = false;
-
-  if (move.action === 'pickup') {
-    setMoveLog(prev => [...prev, `Bot ${turnIndex} picked up the pile`]);
-    setPlayers(prev => {
-      const updated = [...prev];
-      const currentPlayer = { ...updated[botId] };
-      const newHand = [...currentPlayer.hand, ...pile];
-      if (currentPlayer.mystery.filter(c => selectedCards.includes(c)).length > 0) {
-        newHand.push(...currentPlayer.mystery.filter(c => selectedCards.includes(c)));
-        currentPlayer.mystery = currentPlayer.mystery.filter(c => !selectedCards.includes(c));
+      // game over
+      updatedPlayers[turnIndex] = currentPlayer;
+      const playerScores = calculateScores(updatedPlayers);
+      for (let i=0; i<updatedPlayers.length; i++) {
+        updatedPlayers[i].roundScore = playerScores.scores[i].roundScore;
+        updatedPlayers[i].totalScore = playerScores.scores[i].totalScore;
+        if (playerScores.gameOver && playerScores.lowestPlayer === i) updatedPlayers[i].winner = true;
       }
-      updated[botId] = {...currentPlayer, hand: newHand,  };
-      return updated;
-    });
-    setPile([]);
-
-  } else if (move.action === 'play') {
-    // animation
-    //rerotatePileCards('pileId', 3);
-    //tossCardsOnPile(move.cards, 'pileId');
-    move.cards.forEach((card, index) => {
-      const cardDOMId = document.getElementById('card-' + card.deckIndex.toString())
-      cardDOMId.click();
-    });
-    setTimeout(() => {
-      handlePlaySelected();
-      setSelectedCards([]);
-  }, 3000);
-
-    setMoveLog(prev => [...prev, `Bot ${turnIndex} played ${move.cards.length} x ${move.cards[0].rank}`]);
-    const updatedPile = processPile(pile, move.cards);
-    if (updatedPile.length === 0) {
-      samePlayer = true;
-    } 
-    //const updatedPile = [...pile, ...move.cards];
-    setPile(updatedPile);
-    setPlayers(prev => {
-      const updated = [...prev];
-      updated[botId].hand = updated[botId].hand.filter(c => !move.cards.includes(c));
-      updated[botId].faceUp = updated[botId].faceUp.filter(c => !move.cards.includes(c));
-      updated[botId].mystery = updated[botId].mystery.filter(c => !move.cards.includes(c));
-      if (updated[botId].hand.length === 0 && updated[botId].faceUp.length === 0 && updated[botId].mystery.length === 0) {
-        setMoveLog(prev => [...prev, `Bot ${botId} has won the game!`]);
-        // Game over logic can be added here
-      } 
-      return updated;
-    });
-  } 
-
-  const nextTurn = (turnIndex +  (samePlayer ? players.length : 1)) % players.length;
-  //setTimeout(() => setTurnIndex(nextTurn), 2000);
-  setTimeout(() => {
-    setTurnIndex(nextTurn);
-    setTurnNumber(prev => prev + 1);
-  }, turnDelay);
-  
-}, [turnNmber]);
+    } else {
+      updatedPlayers[turnIndex] = currentPlayer;
+    }
+    console.log(updatedPlayers);
+    setPlayers(updatedPlayers);
+  }
 
   if (!players || players.length === 0) {
-    console.log('app not loaded');
     return (<div>Loading players...</div>);
   } else {
-    console.log('app IS loaded');
     return (
       <div>
         <RectangularLayout players={players} 
@@ -239,9 +311,13 @@ useEffect(() => {
                         handlePickUpPile={handlePickUpPile} 
                         handlePlaySelected={handlePlaySelected}
                         moveLog={moveLog}
+                        gameOver={gameOver}
+                        handleClosePopup={handleClosePopup}
+                        handleNewRound={handleNewRound}
                     />
+        <div></div>
       </div>  
     );
   }
  }
-  
+

@@ -3,9 +3,7 @@ import './playerStatus.css'
 import './card.css'
 import Card from './Card';
 
-export default function botStaptus({ player, playerIndex, players, selectedCards, handleCardClick, handlePlaySelected }) {
-
-  console.log('bot status playerIndex: ' + playerIndex.toString());
+export default function botStatus({ player, playerIndex, players, selectedCards, handleCardClick, handlePlaySelected }) {
 
 if (player) return (
     <div className={"bot-cards"} id={"player-" + playerIndex}>
@@ -14,13 +12,13 @@ if (player) return (
         <div className="d-flex justify-content-center" >      
         {player.hand.map((card, index) => (
           <Card
-            key={index}
-            rank={card ? player.type !== 'human' ? ' ' : card.rank === 13 ? 'S' : card.rank : 'Empty'}
+            key={card.deckIndex}
+            rank={card ? selectedCards && selectedCards.includes(card) ? card.rank === 13 ? 'S' : card.rank : '' : 'Empty'}
             showEdge={false}
-            selected={selectedCards && selectedCards.includes(card)}
-            faceDown={true}
+            faceDown={!(selectedCards && selectedCards.includes(card))}
             deckIndex={card.deckIndex}
-            onClick={() => handleCardClick(card, player.type, "hand", playerIndex)}
+            selected={selectedCards && selectedCards.includes(card)}
+            onClick={() => handleCardClick(card, player)}
           />
         ))}
       </div>
@@ -28,31 +26,30 @@ if (player) return (
     <div className="d-flex justify-content-left mystery-faceup-container" >
       <div className={'player-mystery row reveal-container'}>
         {player.mystery.map((card, index) => (
-          <div className="player-table-cards">      
+          <div className="player-table-cards" key={card.deckIndex} >      
             <Card
-              key={index}
-              rank="?"
+              key={card.deckIndex}
+              rank={card ? selectedCards && selectedCards.includes(card) ? card.rank === 13 ? 'S' : card.rank : '?' : 'Empty'}
+              showEdge={false}
+              faceDown={!(selectedCards && selectedCards.includes(card))}
+              deckIndex={card.deckIndex}
               selected={selectedCards && selectedCards.includes(card)}
-            showEdge={false}
-              faceDown={true}
-            deckIndex={card.deckIndex}
-            onClick={() => handleCardClick(card, player.type, "hand", playerIndex)}
-            
+              onClick={() => handleCardClick(card, player)}
               />        
           </div>
           ))}
       </div>
       <div className={'player-faceup row reveal-container'}>
         {player.faceUp.map((card, index) => (
-          <div className="player-table-cards">      
+          <div className="player-table-cards" key={card.deckIndex} >      
             <Card
-              key={index}
-              rank={card ? card.rank === 13 ? 'S' : card.rank : 'Empty'}
-              selected={selectedCards && selectedCards.includes(card)}
+              key={card.deckIndex}
+            rank={card ? card.rank === 13 ? 'S' : card.rank : 'Empty'}
             showEdge={false}
-              faceDown={false}
+            faceDown={false}
             deckIndex={card.deckIndex}
-            onClick={() => handleCardClick(card, player.type, "hand", playerIndex)}
+            selected={selectedCards && selectedCards.includes(card)}
+            onClick={() => handleCardClick(card, player)}
             />        
           </div>
           ))}

@@ -3,8 +3,6 @@ import Card from './Card';
 
 export default function Pile({ pile, handlePickUpPile, players, playerIndex }) {
 
-  console.log('pile');
-  console.log(players);
   return (
     <div className={'pile-cards'}>     
       <div id={'pileId'}>

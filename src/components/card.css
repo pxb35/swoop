@@ -111,9 +111,13 @@
     margin-right: --5em;
 }
 
+.player-hand .card.faceDown.selected ,
+.player-mystery .card.faceDown.selected,
+.player-hand .card.faceDown.selected,
 .card.selected {
   border-color: #007bff;
   box-shadow: 0 0 10px #007bff;
+  background-color: white;
   transform: scale(1.05);
 }
 
@@ -143,7 +147,7 @@
   font-weight: bold;
 }
 .bot-cards {
-    background-image: url(/swoop/public/bot.png);
+    background-image: url(/swoop/bot.png);
     background-size: 5em;
     background-repeat: no-repeat;
 }

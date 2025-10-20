@@ -11,6 +11,9 @@ export function dealPlayers(deck, numPlayers, interactivePlayers) {
         players[i]['hand'] = [];
         players[i]['faceUp'] = [];
         players[i]['mystery'] = [];
+        players[i]['roundScore'] = 0;
+        players[i]['totalScore'] = 0;
+        players[i]['winner'] = false;
         players[i]['name'] = players[i]['type'] === 'human' ? `You` : `Bot ${i}`;
         players[i]['position'] = i === 0 ? 'bottom' : i === 1 ? 'left' : i === 2 ? 'right' : 'top';
         // Deal cards to player
@@ -29,5 +32,19 @@ export function dealPlayers(deck, numPlayers, interactivePlayers) {
         }
         players[i]['hand'].sort((a, b) => a.rank - b.rank);
     }
+
+    //----------  added this to test ---------
+    cardIndex = 0;
+    for (let i = 0; i < numPlayers; i++) {
+        players[i]['hand'] = [];
+        players[i]['faceUp'] = [];
+        players[i]['mystery'] = [];
+        for (let j=0; j<2; j++) {
+            players[i]['hand'][j] = deck[cardIndex];
+            cardIndex++;
+        }
+    }
+    // ------- end of test section ----------
+
     return players;
 }

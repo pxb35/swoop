@@ -1,4 +1,6 @@
-export function botTurn(botHand, pileTop, pileHistory) {
+export function botTurn(botHand, pileHistory) {
+  const pileTop = pileHistory[pileHistory.length - 1];
+  
   const isWild = card => card.rank === 13;
   const isLegal = card => !pileTop || isWild(card) || card.rank <= pileTop.rank;
 

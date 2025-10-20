@@ -3,11 +3,8 @@ import './playerStatus.css'
 import Card from './Card';
 import dealDeck from './dealUtils';
 
-export default function PlayerStatus({ players, playerIndex, handleCardClick, handlePlaySelected, selectedCards }) {
-  const player = players[0];
-  
-  console.log('player status playerIndex: ' + playerIndex.toString());
-
+export default function PlayerStatus({ player, players, playerIndex, handleCardClick, handlePlaySelected, selectedCards, handleNewRound }) {
+ 
   if (player) return (
     <div id={"player-" + playerIndex }>
       <strong>{player.name}</strong>
@@ -21,11 +18,6 @@ export default function PlayerStatus({ players, playerIndex, handleCardClick, ha
               onClick={() => handlePlaySelected(player.type)}
             >Play Selected</button>
           </div>
-          <div>
-            <button 
-              onClick={() => dealDeck(players)}
-            >Deal New Game</button>
-          </div>
           </div>
         ) : null}      
     </div>
@@ -35,12 +27,12 @@ export default function PlayerStatus({ players, playerIndex, handleCardClick, ha
         <div className="d-flex justify-content-center">      
         {player.hand.map((card, index) => (
           <Card
-            key={index}
+            key={card.deckIndex}
             rank={card ? player.type !== 'human' ? ' ' : card.rank === 13 ? 'S' : card.rank : 'Empty'}
             selected={selectedCards && selectedCards.includes(card)}
             showEdge={false}
-            onClick={() => handleCardClick(card, player.type, "hand", playerIndex)}
-            faceDown={false}
+            onClick={() => handleCardClick(card, player)}
+            faceDown={card && player.type !== 'human'}
             deckIndex={card.deckIndex}
           />
         ))}
@@ -51,11 +43,11 @@ export default function PlayerStatus({ players, playerIndex, handleCardClick, ha
         <div className="d-flex justify-content-center">      
           {player.mystery.map((card, index) => (
             <Card
-              key={index}
+              key={card.deckIndex}
               rank={card ? selectedCards && selectedCards.includes(card) ? card.rank === 13 ? 'S' : card.rank : '?' : 'Empty'}
               selected={selectedCards && selectedCards.includes(card)}
               showEdge={false}
-              onClick={() => handleCardClick(card, player.type, "mystery", playerIndex)}
+              onClick={() => handleCardClick(card, player)}
               faceDown={selectedCards && selectedCards.includes(card) ? false : true}
             deckIndex={card.deckIndex}
             />        
@@ -66,11 +58,11 @@ export default function PlayerStatus({ players, playerIndex, handleCardClick, ha
         <div className="d-flex justify-content-center">      
           {player.faceUp.map((card, index) => (
             <Card
-              key={index}
+              key={card.deckIndex}
               rank={card ? card.rank === 13 ? 'S' : card.rank : 'Empty'}
               selected={selectedCards && selectedCards.includes(card)}
               showEdge={false}
-              onClick={() => handleCardClick(card, player.type, "faceUp", playerIndex)}
+              onClick={() => handleCardClick(card, player)}
               faceDown={false}
             deckIndex={card.deckIndex}
             />        
