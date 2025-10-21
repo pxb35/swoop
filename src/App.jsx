@@ -99,7 +99,7 @@ useEffect(() => {
     //return updated;
   } else if (move.action === 'play') {
     // animation
-    tossCardsOnPile(move.cards, 'pileId');
+    //tossCardsOnPile(move.cards, 'pileId');
     //for (let i=0; i<move.cards.length; i++) {
       //const cardDOMId = document.getElementById('card-' + move.cards[i].deckIndex.toString());
       
@@ -113,9 +113,9 @@ useEffect(() => {
 
     // add cards to selected list
     const updateSelected = [...move.cards];
-    setTimeout(() => {
+    //setTimeout(() => {
       setSelectedCards(updateSelected);
-    }, turnDelay / 1.2);
+    //}, turnDelay / 1.2);
   } 
   
 }, [turnNumber]);
@@ -279,34 +279,39 @@ useEffect(() => {
     }
 
     setPilePicked(false);
+    tossCardsOnPile(selectedCards, 'pileId');
     
-    // Add selected cards to pile
-    const updatedPile = processPile(pile, selectedCards);
-    setPile(updatedPile);
-    setMoveLog(prev => [...prev, 'Player ' + turnIndex + ' played ' + selectedCards.length.toString() + ' x ' + (selectedCards[0].rank === 13 ? 'swoop' : selectedCards[0].rank.toString())]);
-    console.log('Player ' + turnIndex + ' played ' + selectedCards.length.toString() + ' x ' + (selectedCards[0].rank === 13 ? 'swoop' : selectedCards[0].rank.toString()));
+    setTimeout(() => {
+      // Add selected cards to pile
+      const updatedPile = processPile(pile, selectedCards);
+      setPile(updatedPile);
+      setMoveLog(prev => [...prev, 'Player ' + turnIndex + ' played ' + selectedCards.length.toString() + ' x ' + (selectedCards[0].rank === 13 ? 'swoop' : selectedCards[0].rank.toString())]);
+      console.log('Player ' + turnIndex + ' played ' + selectedCards.length.toString() + ' x ' + (selectedCards[0].rank === 13 ? 'swoop' : selectedCards[0].rank.toString()));
 
-    // Update player hand and faceUp
-    const updatedPlayers = [...players];
-    const currentPlayer = { ...updatedPlayers[turnIndex] };
-    currentPlayer.hand = currentPlayer.hand.filter(c => !selectedCards.includes(c));
-    currentPlayer.faceUp = currentPlayer.faceUp.filter(c => !selectedCards.includes(c));
-    currentPlayer.mystery = currentPlayer.mystery.filter(c => !selectedCards.includes(c));
-    if (currentPlayer.hand.length === 0 && currentPlayer.faceUp.length === 0 && currentPlayer.mystery.length === 0) {
-      // game over
-      updatedPlayers[turnIndex] = currentPlayer;
-      const playerScores = calculateScores(updatedPlayers);
-      for (let i=0; i<updatedPlayers.length; i++) {
-        updatedPlayers[i].roundScore = playerScores.scores[i].roundScore;
-        updatedPlayers[i].totalScore = playerScores.scores[i].totalScore;
-        if (playerScores.gameOver && playerScores.lowestPlayer === i) updatedPlayers[i].winner = true;
+      // Update player hand and faceUp
+      const updatedPlayers = [...players];
+      const currentPlayer = { ...updatedPlayers[turnIndex] };
+      currentPlayer.hand = currentPlayer.hand.filter(c => !selectedCards.includes(c));
+      currentPlayer.faceUp = currentPlayer.faceUp.filter(c => !selectedCards.includes(c));
+      currentPlayer.mystery = currentPlayer.mystery.filter(c => !selectedCards.includes(c));
+      if (currentPlayer.hand.length === 0 && currentPlayer.faceUp.length === 0 && currentPlayer.mystery.length === 0) {
+        // game over
+        updatedPlayers[turnIndex] = currentPlayer;
+        const playerScores = calculateScores(updatedPlayers);
+        for (let i=0; i<updatedPlayers.length; i++) {
+          updatedPlayers[i].roundScore = playerScores.scores[i].roundScore;
+          updatedPlayers[i].totalScore = playerScores.scores[i].totalScore;
+          if (playerScores.gameOver && playerScores.lowestPlayer === i) updatedPlayers[i].winner = true;
+        }
+      } else {
+        updatedPlayers[turnIndex] = currentPlayer;
       }
-    } else {
-      updatedPlayers[turnIndex] = currentPlayer;
-    }
-    console.log(updatedPlayers);
-    setPlayers(updatedPlayers);
+      console.log(updatedPlayers);
+      setPlayers(updatedPlayers);
+    }, turnDelay / .75);
+
   }
+
 
   if (!players || players.length === 0) {
     return (<div>Loading players...</div>);

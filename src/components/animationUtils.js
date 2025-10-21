@@ -7,15 +7,16 @@ export function moveDOMElement(element, targetLocation, targetRotation) {
 
   const animation = element.animate(
     [
-      { rotate: "0deg", scale: 1 },
+      { rotate: "0deg", scale: 1, opacity: 1 },
       { rotate: "90deg", scale: 1.2 },
       { rotate: "180deg", scale: 1.5 },
-      { rotate: "270deg", scale: 1.2 },
-      { rotate: "330deg", scale: 1.1 },
+      { rotate: "270deg", scale: 1.2, opacity: 0.8 },
+      { rotate: "330deg", scale: 1, opacity: 0.5 },
       {
         translate: offsetX.toString() + "px " + offsetY.toString() + "px",
         rotate: "360deg",
         scale: 1,
+        opacity: 0,
       },
       //translate: offsetX.toString() + "px " + offsetY.toString() + "px",
       //scale: 1,
