@@ -1,0 +1,29 @@
+button.settings {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+p.settings {
+    margin-bottom: .25rem;
+    font-weight: bold;
+}
+
+div.number-of-players.section {
+    margin-bottom: 2em;
+}
+
+.bi-gear {
+    color: white;
+    font-size: 2rem;
+}
+
+.settings-buttons,
+.game-buttons {
+    margin-bottom: 2rem;
+}
+
+.settings-buttons button,
+.game-buttons button {
+    margin-right: 1rem;
+}

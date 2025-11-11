@@ -1,0 +1,210 @@
+
+.hand-container .card,
+.mystery-container .card,
+.faceup-container .card,
+.pile-cards .card {
+  width: 4.5em;
+  height: 6.25em;
+  border: .2em solid #333;
+  border-radius: .5em;
+  background-color: white;
+  position: relative;
+  font-family: 'Arial', sans-serif;
+  box-shadow: .2em .2em .4em rgba(0,0,0,0.2);
+  cursor: pointer;
+  user-select: none;
+  float: left;
+  opacity: 1;
+  margin-right: .5em;
+}
+
+.card .corner {
+  font-size: 1em;
+}
+
+.card .center {
+  font-size: 3em;
+}
+
+ .hand-container .card{
+  margin-right: -2.8em;
+ }
+
+ .bot-player {
+  font-size:75%;
+ }
+
+ .hand-container .d-flex {
+  margin-top:.7em;
+ }
+
+ .human-player .hand-container .card {
+  font-size: 2.5em;
+  min-width: 4.5em;
+ }
+
+ /*
+.bot-player .hand-container,
+.bot-player .mystery-container,
+.bot-player .faceup-container  {
+  width: 3rem;
+  height: 4rem;
+  border: .2rem solid #333;
+  border-radius: .5rem;
+  box-shadow: .2rem .2rem .4rem rgba(0,0,0,0.2);
+}
+  */
+
+.bot-player .hand-container {
+  font-size:80%;
+  margin-bottom: .75em;
+}
+
+.human-player .hand-container {
+  font-size:80%; 
+}
+
+.pile-cards .card {
+  border-color: #96acf5;
+  box-shadow: 0 0 .7rem #96acf5;
+}
+
+.faceup-container .card {
+  border-color: #28a745;
+  box-shadow: 0 0 .7rem #28a745;
+}
+
+.mystery-container .card {
+  border-color: #d65575;
+  box-shadow: 0 0 .7rem #d65575;
+}
+
+.mystery-container .card.faceDown {
+  border-color: white;
+  background-color: #d65575;
+}
+
+.hand-container .card {
+  border-color: #d6993e;
+  box-shadow: 0 0 .7rem #d6993e;
+}
+
+.hand-container .card.faceDown {
+  background-color: #d6993e;
+  border-color: white;
+}
+
+/*
+.undealt {
+  position: fixed;
+  Left: 0;
+  top: 0;
+  transition: transform .5s ease; 
+  animation: dealCard2 .5s ease-out forwards;
+}
+*/
+
+@keyframes dealCard2 {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(var(--dx), var(--dy)) scale(1.2);
+  } 
+  50% {
+    transform: translate(var(--dx), var(--dy)) scale(1.4);
+  } 
+  75% {
+    transform: translate(var(--dx), var(--dy)) scale(1.2);
+  } 
+  100% {
+    transform-origin: center;
+    transform: translate(var(--dx), var(--dy)) scale(1);
+  }
+}
+
+.card.notDealt {
+  transition: transform .1s ease;  /* was 0.5s  */
+  animation: dealCard2 .1s ease-out forwards; /* was 0.6s  */
+}
+
+.card-swoop {
+  height: 5rem;
+  margin: 10px 15px;
+}
+
+/*
+.visible {
+   animation-name: fadeIn;
+      animation-duration: .5s; 
+      animation-timing-function: ease-in; 
+      animation-fill-mode: forwards; 
+}
+*/
+
+.card.showEdge {
+    margin-right: -4em;
+}
+
+.player-hand .card.faceDown.selected ,
+.player-mystery .card.faceDown.selected,
+.player-hand .card.faceDown.selected,
+.card.selected {
+  border-color: #007bff;
+  box-shadow: 0 0 10px #007bff;
+  background-color: white;
+  transform: scale(1.05);
+}
+
+.corner {
+  position: absolute;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.human .corner {
+  font-size: 1rem;
+}
+
+.top-left {
+  top: 2px;
+  left: 2px;
+}
+
+.human .top-left {
+  margin-top: 0;
+  margin-left: 5px
+}
+
+.human .center {
+  font-size: 2rem;
+}
+
+.bottom-right {
+  bottom: 2px;
+  right: 2px;
+}
+
+.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.bot-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.bot-cards strong span {
+  color: blue;
+  margin: 10px;
+}
+
+.human-player .bot-icon {
+  display: none;
+} 

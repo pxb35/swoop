@@ -1,0 +1,38 @@
+Basic React App instructions:
+
+- to create a new app: npm create vite@latest
+  - enter the project name
+  - specify "react" when prompted
+  - specify "JavaScript" when prompted
+- cd into the project directory
+- to install dependencies: npm install
+- to open the project in VS Code: code .
+- once in VS Code, open a terminal window
+- in the terminal window, to start the server in a browser tab run: npm run dev
+- changes to the code will automatically be reflected in the browser tab
+- debugging can be done using the browser's developer tools (F12)
+- to stop the server, in the terminal window press: Ctrl + C
+
+to deploy on github pages
+
+- within VS Code, modify your vite.config.js (or vite.config.ts) file to include the base option. This is crucial for ensuring all assets are correctly referenced when served from a subfolder on GitHub Pages. Replace YOUR_REPOSITORY_NAME with the actual name of your GitHub repository.
+- Install the gh-pages package:
+
+      npm install gh-pages --save-dev
+
+-Add the following script to package.json
+
+    "scripts": {
+      "dev": "vite",
+      "build": "vite build",
+      "predeploy": "npm run build",
+      "deploy": "gh-pages -d dist"
+    },
+
+- Run deploy
+
+      npm run deploy
+
+- On github (on the web), make the repository public (at the bottom of Settings -> General)
+- On settings->pages
+- select 'deploy from branch' and select gh-pages as the branch and select save

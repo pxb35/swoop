@@ -1,0 +1,93 @@
+.round-winner,
+.game-winner {
+    text-align: center;
+}
+
+.game-winner {
+    margin-bottom: 2rem;
+}
+
+.rectangular-container {
+    width: 100vw;
+    height: 100vh;
+    padding: 20px;
+    overflow: hidden;
+}
+/*
+.cardtable-top {
+    height: 25%;
+}
+
+.cardtable-bottom {
+    height: 35%;
+}
+
+.cardtable-center {
+    height: 40%;
+}
+
+.cardtable-center .table-sub-row {
+    height: 50%
+}
+*/
+.log-container,
+.scores-container {
+    max-height: 70%;
+    justify-content: right;
+    text-align: right;
+    align-content: baseline;
+    padding: 0.5em;
+}
+
+ .scores div {
+    text-align: right;
+ }
+
+.play-log p,
+.scores-container p {
+    margin: 0;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.log-container {
+    justify-content: left;
+    text-align: left;
+    padding: 0.5em;
+}
+
+.new-round-visible,
+.popup-visible {
+    visibility: visible;
+}
+
+.new-round-not-visible {
+    visibility: hidden;
+}
+
+.breeze,
+.swoop-bird {
+    position: relative;
+    right: 200px;
+    top: -150px;
+    width: 20em;
+    height: auto;
+    z-index: 1000;
+}
+
+.scores p {
+    text-align: right;
+    font-weight: bold;
+}
+
+.main-player-spacer {
+    min-height: 5rem;
+}
+
+.cardtable-top,
+.cardtable-center,
+.cardtable-bottom,
+.table-sub-row {
+    min-height: 15%;
+    margin-bottom: 2rem;
+}
