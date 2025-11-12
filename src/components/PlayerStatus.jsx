@@ -61,8 +61,7 @@ export default function PlayerStatus({ player, players, playerIndex, handleCardC
             {player.hand.map((card, index) => (
               <Card
                 key={card.deckIndex}
-                //rank={card ? player.type !== 'human' ? ' ' : card.rank === 13 ? 'S' : card.rank : 'Empty'}
-                rank={card.rank}
+                rank={card ? player.type !== 'human' ? ' ' : card.rank === 13 ? 'S' : card.rank : 'Empty'}
                 selected={selectedCards && selectedCards.includes(card)}
                 showEdge={false}
                 onClick={() => handleCardClick(card, player)}
