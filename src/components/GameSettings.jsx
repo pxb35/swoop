@@ -5,25 +5,31 @@ import { Form } from 'react-bootstrap';
 import "./GameSettings.css";
     
 export default function GameSettings(params) {
-      
+ 
+  const handleRevealOptionChange = (event) => {
+     params.setRevealCardsIsChecked(event.target.checked);
+     handleSave();
+  };
+
   const [show, setShow] = useState(false);
 
-      const handleClose = () => setShow(false);
-      const handleShow = () => setShow(true);
-      const handleSave = () => {
-        const newSettings = {
-          playerCount:    parseInt(playerOption.split('-')[1]),
-          playerName1:    playerName1,
-          playerName2:    playerName2,
-          playerName3:    playerName3,
-          playerName4:    playerName4,
-          playerName5:    playerName5,
-          playerName6:    playerName6,
-          playerName7:    playerName7,
-          playerName8:    playerName8
-        }
-        localStorage.setItem('settings', JSON.stringify(newSettings));
-      }
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const handleSave = () => {
+    const newSettings = {
+      playerCount:    parseInt(playerOption.split('-')[1]),
+      playerName1:    playerName1,
+      playerName2:    playerName2,
+      playerName3:    playerName3,
+      playerName4:    playerName4,
+      playerName5:    playerName5,
+      playerName6:    playerName6,
+      playerName7:    playerName7,
+      playerName8:    playerName8,
+      revealCards:    params.revealCardsIsChecked
+    }
+    localStorage.setItem('settings', JSON.stringify(newSettings));
+  }
 
       const storedSettings = getSettings();
 
@@ -36,6 +42,7 @@ export default function GameSettings(params) {
       const [playerName6, setPlayerName6] = useState(storedSettings.playerName6);
       const [playerName7, setPlayerName7] = useState(storedSettings.playerName7);
       const [playerName8, setPlayerName8] = useState(storedSettings.playerName8);
+
 /*
       const [saveSettings, setSaveSettings] = useState(false);
       
@@ -73,7 +80,7 @@ export default function GameSettings(params) {
             <Offcanvas.Body>
               <div className="number-of-players section">
                 <p className="settings label">Number of Players</p>
-                <input type="radio" className="btn-check" name="options-players" id="players-2" autoComplete="off" value="option-2" checked={playerOption === 'option-2'} 
+                <input type="radio" className="btn-check-sm" name="options-players" id="players-2" autoComplete="off" value="option-2" checked={playerOption === 'option-2'} 
                       onChange={(e) => setPlayerOption(e.target.value)} />
                 <label className="btn" htmlFor="players-2">2</label>
 
@@ -167,13 +174,26 @@ export default function GameSettings(params) {
             <h4>Game Actions</h4>
             <div className="row justify-contents-center game-buttons">
               <button className="btn btn-primary col-4" onClick={() => params.handleNewRound(false)}>
-                restart the round
+                new round
               </button>
               <button className="btn btn-primary col-4" onClick={() => params.handleNewRound(true)}>
-                restart the game
+                new game
               </button>
             </div>
-
+            <div className="reveal-card=check">
+              <input className="form-check-input" 
+                    type="checkbox"   
+                    id="reveal-cards"
+                    checked={params.revealCardsIsChecked}
+                    onChange={(e) => handleRevealOptionChange(e)}
+               />
+              <label className="form-check-label" htmlFor="reveal-cards" >
+                Reveal cards at the end of the round
+              </label>
+            </div>
+            <div className='version-date'>
+              Nov 12, 2025
+            </div>
             </Offcanvas.Body>
           </Offcanvas>
         </>

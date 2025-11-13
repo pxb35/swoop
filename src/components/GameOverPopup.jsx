@@ -23,8 +23,8 @@ const GameOverPopup = ({ onClose, children, players, gameOver, handleNewRound })
             </Modal.Body>
             <Modal.Footer>
               <button className="btn btn-primary" onClick={() => onClose()}>Close</button>
-              <button className="btn btn-primary" onClick={() => handleNewRound(false)}>Deal New Round</button>
-              <button className="btn btn-primary" onClick={() => handleNewRound(true)}>Deal New Game</button>
+              <button className="btn btn-primary" onClick={() => handleNewRound(false)}>New Round</button>
+              <button className="btn btn-primary" onClick={() => handleNewRound(true)}>New Game</button>
             </Modal.Footer>
           </Modal>
   );

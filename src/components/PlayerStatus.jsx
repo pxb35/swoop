@@ -4,8 +4,10 @@ import Card from './Card';
 import dealDeck from './dealUtils';
 import botPng from '/bot.png';
 
-export default function PlayerStatus({ player, players, playerIndex, handleCardClick, handlePlaySelected, selectedCards }) {
- 
+export default function PlayerStatus({ player, players, playerIndex, handleCardClick, handlePlaySelected, selectedCards, revealCardsIsChecked }) {
+  // see if the game is over and you want reveal all cards
+  const revealCards = (players.filter(p => p.hand.length + p.faceUp.length + p.mystery.length === 0).length > 0 && revealCardsIsChecked);
+  
   if (player) return (
     <> 
       <div className={"row " + (player.type === 'human' ? 'human-player' : 'bot-player')}>
@@ -30,17 +32,18 @@ export default function PlayerStatus({ player, players, playerIndex, handleCardC
               {player.mystery.map((card, index) => (
                 <Card
                   key={card.deckIndex}
-                  rank={card ? selectedCards && selectedCards.includes(card) ? card.rank === 13 ? 'S' : card.rank : '?' : 'Empty'}
+                  rank={card ? selectedCards && selectedCards.includes(card) || revealCards ? card.rank === 13 ? 'S' : card.rank : '?' : 'Empty'}
                   selected={selectedCards && selectedCards.includes(card)}
                   showEdge={false}
                   onClick={() => handleCardClick(card, player)}
-                  faceDown={selectedCards && selectedCards.includes(card) ? false : true}
+                  faceDown={!(selectedCards && selectedCards.includes(card)) && !revealCards}
                   deckIndex={card.deckIndex}
+                  revealCards={revealCards}
                 />        
               ))}
             </div>
           </div>
-          <div className={'faceup-container row'}>
+          <div className={'faceup-container row' + (revealCards ? ' reveal' : '')} >
             <div className="d-flex justify-content-center">      
               {player.faceUp.map((card, index) => (
                 <Card
@@ -51,6 +54,7 @@ export default function PlayerStatus({ player, players, playerIndex, handleCardC
                   onClick={() => handleCardClick(card, player)}
                   faceDown={false}
                   deckIndex={card.deckIndex}
+                  revealCards={revealCards}
                 />        
               ))}
             </div>
@@ -61,12 +65,13 @@ export default function PlayerStatus({ player, players, playerIndex, handleCardC
             {player.hand.map((card, index) => (
               <Card
                 key={card.deckIndex}
-                rank={card ? player.type !== 'human' ? ' ' : card.rank === 13 ? 'S' : card.rank : 'Empty'}
+                rank={card ? player.type !== 'human' && !revealCards ? ' ' : card.rank === 13 ? 'S' : card.rank : 'Empty'}
                 selected={selectedCards && selectedCards.includes(card)}
                 showEdge={false}
                 onClick={() => handleCardClick(card, player)}
-                faceDown={card && player.type !== 'human'}
+                faceDown={card && player.type !== 'human' && !revealCards}
                 deckIndex={card.deckIndex}
+                revealCards={revealCards}
               />
             ))}
           </div>

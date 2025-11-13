@@ -36,6 +36,8 @@ export default function App() {
   const [gameOver, setGameOver] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [ignoreEvents, setIgnoreEvents] = useState(false);
+  const [revealCardsIsChecked, setRevealCardsIsChecked] = useState(false);
+
   //const [showPopup, setShowPopup] = useState(false);
 
   // -- initialize deck and players -runs once --
@@ -45,6 +47,7 @@ export default function App() {
     const settings = getSettings();
     if (settings) {
       numberOfPlayers = settings.playerCount;
+      setRevealCardsIsChecked(settings.revealCards);
     }
     firstPlayer = Math.floor(Math.random() * numberOfPlayers);
     const deck = createDeck(numberOfPlayers);
@@ -73,20 +76,6 @@ export default function App() {
         });
       }, turnDelay);
     } else {
-      
-      //console.log('pile length: ' + pile.length.toString() + ' players len: ' + players.length.toString() + (pilePicked ? ' pile picked' : ' pile NOT picked')); 
-      //console.log('1 turn index and number: ' + turnIndex.toString() + ' / ' + turnNumber.toString());
-      
-      //setTimeout(() => {
-        /*
-        //setTurnIndex((prev) => (prev + ((pile.length === 0 && !pilePicked) ? players.length : 1)) % players.length); // Optional turn rotation
-        if (pile.length === 0 && !pilePicked) {
-          setTurnIndex((prev) => prev % players.length); // same player goes again
-        } else {
-          setTurnIndex((prev) => (prev + 1) % players.length );
-        }
-        setTurnNumber((prev) => prev + 1);
-        */
         let turnNumberCopy = turnNumber;
         if (pile.length === 0 && !pilePicked) {
           // same player
@@ -103,7 +92,7 @@ export default function App() {
       
       //console.log('2 turn index and number: ' + turnIndex.toString() + ' / ' + turnNumber.toString());
     }
-  }, [players]);
+  }, [pile]);
 
   // -- run when turn number changes - bot logic --
   useEffect(() => {
@@ -133,27 +122,14 @@ export default function App() {
     setPilePicked(false);
     if (move.action === 'pickup') {
       setPilePicked(true);
+      console.log('botlogic: ', move);
       const updated = handlePickUpPile(turnIndex, move.cards);
       //return updated;
     } else if (move.action === 'play') {
-      // animation
-      //tossCardsOnPile(move.cards, 'pileId');
-      //for (let i=0; i<move.cards.length; i++) {
-        //const cardDOMId = document.getElementById('card-' + move.cards[i].deckIndex.toString());
-        
-        //console.log('move cards:' + move.cards.length);
-        
-        //cardDOMId.click();
-      //}
-      //setTimeout(() => {
-      //  handlePlaySelected();
-      //}, 3000);
-
+      
       // add cards to selected list
       const updateSelected = [...move.cards];
-      //setTimeout(() => {
-        setSelectedCards(updateSelected);
-      //}, turnDelay / 1.2);
+      setSelectedCards(updateSelected);
     } 
     
   }, [turnNumber]);
@@ -168,7 +144,9 @@ export default function App() {
   //----- event handlers -----
   // --Player picks up pile --
   const handlePickUpPile = (playerIndex, addToHand) => {
-  
+  console.log(playerIndex);
+  console.log(addToHand);
+
     if (pile.length === 0) return;
 
     const pileCopy = [...pile]; // snapshot before clearing
@@ -184,7 +162,7 @@ export default function App() {
         const newHand = [...currentPlayer.hand, ...pileCopy];
 
         // move the revealed mystery card (if there is one) to the players hand
-        if (currentPlayer.mystery.filter(c => addToHand.includes(c)).length > 0) {
+        if (addToHand && currentPlayer.mystery.filter(c => addToHand.includes(c)).length > 0) {
           newHand.push(...currentPlayer.mystery.filter(c => addToHand.includes(c)));
           currentPlayer.mystery = currentPlayer.mystery.filter(c => !addToHand.includes(c));
         }
@@ -441,9 +419,13 @@ export default function App() {
                         showSettings={showSettings} 
                         handleCloseSettings={handleCloseSettings}
                         handleClosePopup={handleClosePopup}
+                        revealCardsIsChecked={revealCardsIsChecked}
                     />
             
-            <GameSettings handleNewRound={handleNewRound} />           
+            <GameSettings handleNewRound={handleNewRound} 
+                          setRevealCardsIsChecked={setRevealCardsIsChecked}
+                          revealCardsIsChecked={revealCardsIsChecked}
+                     />           
       
       </div>
     );

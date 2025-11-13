@@ -4,7 +4,7 @@ import { useRef, useEffect } from 'react';
 import './card.css';
 import swoopLogo from '/swoop.png'
 
-const Card = ({ rank, deckIndex, selected, showEdge, className = '', onClick, faceDown }) => {
+const Card = ({ rank, deckIndex, selected, showEdge, className = '', onClick, faceDown, revealCards }) => {
  
    const cardClasses = [
     'card',
@@ -14,7 +14,7 @@ const Card = ({ rank, deckIndex, selected, showEdge, className = '', onClick, fa
     className
   ].join(' ').trim();
 
- if (faceDown && !selected) {
+ if (faceDown && !selected && !revealCards) {
     return (
       <div id={'card-' + deckIndex} className={cardClasses} onClick={onClick}>
         <img src={swoopLogo} className='card-swoop'></img>

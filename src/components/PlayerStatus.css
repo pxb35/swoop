@@ -1,4 +1,8 @@
 
+.faceup-container.row.reveal {
+  margin-top: 2rem;
+}
+
 .bot-cell-right,
 .bot-cell-left,
 .bot-cell-center {

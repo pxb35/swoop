@@ -51,7 +51,6 @@ export function botTurn(pileHistory, players, playerIndex) {
       mysteryGroup.push(revealedCard);
       return {action: 'play', cards: mysteryGroup};
     } else {
-      const addToHand = [];
       addToHand.push(revealedCard);
       return { action: 'pickup', cards: addToHand };
     }
@@ -64,7 +63,8 @@ function groupByRank(hand) {
   return hand.reduce((acc, card) => {
     acc[card.rank] = acc[card.rank] || [];
     // don't group swoops
-    if (card.rank !== 13 || acc[13] == undefined || acc[13].length === 0) acc[card.rank].push(card);
+    //if (card.rank !== 13 || acc[13] == undefined || acc[13].length === 0) acc[card.rank].push(card);
+    acc[card.rank].push(card);
     return acc;
   }, {});
 }
@@ -97,10 +97,13 @@ function scoreGroup(group, pileHistory, players, playerIndex) {
 
   if (isSwoop) {
     score += 5;
+    if (group.length > 1) {
+      score -= group.length * 10;
+    }
     reasons.push(`Playing swoop card. total score ${score}`);
   }
 
-  if (willSwoop) {
+  if (willSwoop && !isSwoop) {
     score += 20;
     // extra if the swoop uses the pile (as opposed to having all swooped cards in hand)
     if (group.length < 4) score += 20;
@@ -133,7 +136,7 @@ function scoreGroup(group, pileHistory, players, playerIndex) {
     reasons.push(`Blocking next player from getting a potential swoop. total score ${score}`);
   }
 
-  if (isSwoop && cardCnt <= 2) {
+  if (isSwoop && cardCnt === 2) {
     score += 100;
     reasons.push(`Playing swoop first when 2 cards left. total score ${score}`);
   }

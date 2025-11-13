@@ -58,20 +58,24 @@ export function dealPlayers(deck, numPlayers, interactivePlayers, settings) {
         gamePlayers[i]['hand'].sort((a, b) => a.rank - b.rank);
     }
 
-    /*
+    
     //----------  added this to test ---------
     cardIndex = 0;
     for (let i = 0; i < numPlayers; i++) {
-        players[i]['hand'] = [];
-        players[i]['faceUp'] = [];
-        players[i]['mystery'] = [];
+        gamePlayers[i]['hand'] = [];
+        gamePlayers[i]['faceUp'] = [];
+        gamePlayers[i]['mystery'] = [];
         for (let j=0; j<2; j++) {
-            players[i]['hand'][j] = deck[cardIndex];
+            gamePlayers[i]['hand'][j] = deck[cardIndex];
+            cardIndex++;
+            gamePlayers[i]['faceUp'][j] = deck[cardIndex];
+            cardIndex++;
+            gamePlayers[i]['mystery'][j] = deck[cardIndex];
             cardIndex++;
         }
     }
     // ------- end of test section ----------
-    */
+    
    
     return gamePlayers;
 }

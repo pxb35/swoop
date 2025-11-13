@@ -1,13 +1,17 @@
 import Card from './Card';
 import './Pile.css';
 
-export default function Pile({ pile, UpPile, players, playerIndex, handlePickUpPile }) {
-  const blankArr = [];
+export default function Pile({ pile, UpPile, players, playerIndex, selectedCards, handlePickUpPile }) {
+  let revealCardArr = [];
+  if (players[playerIndex].mystery) {
+    revealCardArr = players[playerIndex].mystery.filter(c => selectedCards.includes(c));
+  }
+  
   return (
     <>
     <div className="pile-button row">
       <div className={"pick-up col-12" + (pile && pile.length> 0 && players && players[playerIndex].type === "human" ? ' button-visible' : '')}>
-        <button className="btn btn-primary" onClick={() => handlePickUpPile(playerIndex, blankArr)}>Pick&nbsp;Up&nbsp;Pile</button>
+        <button className="btn btn-primary" onClick={() => handlePickUpPile(playerIndex, revealCardArr)}>Pick&nbsp;Up&nbsp;Pile</button>
       </div>
     </div> 
     <div className={'pile-cards row'}>

@@ -12,7 +12,7 @@ import Settings from './GameSettings';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function RectangularLayout({ pile, playerIndex, players, selectedCards, handleCardClick, handlePlaySelected, handlePickUpPile, moveLog, 
-                                            gameOver, handleClosePopup, handleNewRound, showSettings, handleCloseSettings }) {
+                                            gameOver, handleClosePopup, handleNewRound, showSettings, handleCloseSettings, revealCardsIsChecked }) {
   const playerZoneRef = useRef(null);
 
   return (
@@ -22,14 +22,16 @@ export default function RectangularLayout({ pile, playerIndex, players, selected
             playerIndex={playerIndex}
             selectedCards={selectedCards} 
             handleCardClick={handleCardClick} 
-            handlePlaySelected={handlePlaySelected}  />
+            handlePlaySelected={handlePlaySelected}  
+            revealCardsIsChecked={revealCardsIsChecked} />
       <Row2 pile={pile}
            players={players} 
             playerIndex={playerIndex}
             selectedCards={selectedCards} 
             handleCardClick={handleCardClick} 
             handlePlaySelected={handlePlaySelected} 
-            handlePickUpPile={handlePickUpPile} />
+            handlePickUpPile={handlePickUpPile} 
+            revealCardsIsChecked={revealCardsIsChecked} />
       <Row3 players={players} 
             playerIndex={playerIndex}
             selectedCards={selectedCards} 
@@ -41,13 +43,13 @@ export default function RectangularLayout({ pile, playerIndex, players, selected
             handleNewRound={handleNewRound}
             showSettings={showSettings}
             handleCloseSettings={handleCloseSettings}
-     />
+            revealCardsIsChecked={revealCardsIsChecked} />
     </div>
     </>
   );
 }
 
-function Row1({ players, playerIndex, selectedCards, handleCardClick, handlePlaySelected, handlePickUpPile }) {
+function Row1({ players, playerIndex, selectedCards, handleCardClick, handlePlaySelected, handlePickUpPile, revealCardsIsChecked }) {
   
   const tblPlayerIndex = Math.floor(players.length/2);
   switch (players.length) {
@@ -65,7 +67,8 @@ function Row1({ players, playerIndex, selectedCards, handleCardClick, handlePlay
                 selectedCards={selectedCards} 
                 handleCardClick={handleCardClick} 
                 handlePlaySelected={handlePlaySelected} 
-                handlePickUpPile={handlePickUpPile} />
+                handlePickUpPile={handlePickUpPile} 
+                revealCardsIsChecked={revealCardsIsChecked} />
             </div>
           </div>
       );
@@ -80,7 +83,8 @@ function Row1({ players, playerIndex, selectedCards, handleCardClick, handlePlay
                 player={players[tblPlayerIndex]} playerIndex={tblPlayerIndex}  selectedCards={selectedCards} 
                 handleCardClick={handleCardClick} 
                 handlePlaySelected={handlePlaySelected} 
-                handlePickUpPile={handlePickUpPile} />
+                handlePickUpPile={handlePickUpPile} 
+                revealCardsIsChecked={revealCardsIsChecked} />
             </div>
             <div className="col-4 player-cell-right">
               <PlayerStatus
@@ -88,7 +92,8 @@ function Row1({ players, playerIndex, selectedCards, handleCardClick, handlePlay
                 player={players[tblPlayerIndex + 1]}  playerIndex={tblPlayerIndex + 1}  selectedCards={selectedCards} 
                 handleCardClick={handleCardClick} 
                 handlePlaySelected={handlePlaySelected} 
-                handlePickUpPile={handlePickUpPile} />
+                handlePickUpPile={handlePickUpPile} 
+                revealCardsIsChecked={revealCardsIsChecked} />
             </div>
           </div>
       );
@@ -101,7 +106,8 @@ function Row1({ players, playerIndex, selectedCards, handleCardClick, handlePlay
                 player={players[tblPlayerIndex-1]} playerIndex={tblPlayerIndex-1}  selectedCards={selectedCards} 
                 handleCardClick={handleCardClick} 
                 handlePlaySelected={handlePlaySelected} 
-                handlePickUpPile={handlePickUpPile} />
+                handlePickUpPile={handlePickUpPile} 
+                revealCardsIsChecked={revealCardsIsChecked} />
             </div>
             <div className="col-4 player-cell-center">
               <PlayerStatus 
@@ -109,7 +115,8 @@ function Row1({ players, playerIndex, selectedCards, handleCardClick, handlePlay
                 player={players[tblPlayerIndex]} playerIndex={tblPlayerIndex}  selectedCards={selectedCards} 
                 handleCardClick={handleCardClick} 
                 handlePlaySelected={handlePlaySelected} 
-                handlePickUpPile={handlePickUpPile} />
+                handlePickUpPile={handlePickUpPile} 
+                revealCardsIsChecked={revealCardsIsChecked} />
             </div>
             <div className="col-4 player-cell-right">
               <PlayerStatus
@@ -117,14 +124,15 @@ function Row1({ players, playerIndex, selectedCards, handleCardClick, handlePlay
                 player={players[tblPlayerIndex + 1]}  playerIndex={tblPlayerIndex + 1}  selectedCards={selectedCards} 
                 handleCardClick={handleCardClick} 
                 handlePlaySelected={handlePlaySelected} 
-                handlePickUpPile={handlePickUpPile} />
+                handlePickUpPile={handlePickUpPile} 
+                revealCardsIsChecked={revealCardsIsChecked} />
             </div>
           </div>
       );
   }
 }
 
-function Row2({ pile, players, playerIndex, UpPile, selectedCards, handleCardClick, handlePlaySelected, handlePickUpPile}) {
+function Row2({ pile, players, playerIndex, UpPile, selectedCards, handleCardClick, handlePlaySelected, handlePickUpPile, revealCardsIsChecked}) {
   
   const tblPlayerIndex = parseInt(players.length/2);
   switch (players.length) {
@@ -148,10 +156,15 @@ function Row2({ pile, players, playerIndex, UpPile, selectedCards, handleCardCli
                 player={players[1]}  playerIndex={1} selectedCards={selectedCards} 
                 handleCardClick={handleCardClick} 
                 handlePlaySelected={handlePlaySelected} 
-                handlePickUpPile={handlePickUpPile} />
+                handlePickUpPile={handlePickUpPile} 
+                revealCardsIsChecked={revealCardsIsChecked} />
             </div>
             <div className="col-4 pile">
-              <Pile pile={pile} handlePickUpPile={handlePickUpPile}  players={players} playerIndex={playerIndex} />
+              <Pile pile={pile} 
+                selectedCards={selectedCards} 
+                handlePickUpPile={handlePickUpPile}  
+                players={players} 
+                playerIndex={playerIndex} />
             </div>
             <div className="col-4 player-cell-right">
               <PlayerStatus 
@@ -159,7 +172,8 @@ function Row2({ pile, players, playerIndex, UpPile, selectedCards, handleCardCli
                 player={players[players.length-1]}  playerIndex={players.length-1}  selectedCards={selectedCards} 
                 handleCardClick={handleCardClick} 
                 handlePlaySelected={handlePlaySelected} 
-                handlePickUpPile={handlePickUpPile} />
+                handlePickUpPile={handlePickUpPile} 
+                revealCardsIsChecked={revealCardsIsChecked} />
             </div>
           </div>
       );
@@ -176,7 +190,8 @@ function Row2({ pile, players, playerIndex, UpPile, selectedCards, handleCardCli
                 player={players[2]}  playerIndex={2}  selectedCards={selectedCards} 
                 handleCardClick={handleCardClick} 
                 handlePlaySelected={handlePlaySelected} 
-                handlePickUpPile={handlePickUpPile} />
+                handlePickUpPile={handlePickUpPile} 
+                revealCardsIsChecked={revealCardsIsChecked} />
               </div>
             </div>
             <div className="row justify-content-center table-sub-row ">
@@ -186,7 +201,8 @@ function Row2({ pile, players, playerIndex, UpPile, selectedCards, handleCardCli
                 player={players[1]} playerIndex={1}  selectedCards={selectedCards} 
                 handleCardClick={handleCardClick} 
                 handlePlaySelected={handlePlaySelected} 
-                handlePickUpPile={handlePickUpPile} />
+                handlePickUpPile={handlePickUpPile} 
+                revealCardsIsChecked={revealCardsIsChecked} />
               </div>
             </div>
           </div>
@@ -201,7 +217,8 @@ function Row2({ pile, players, playerIndex, UpPile, selectedCards, handleCardCli
                 player={players[players.length-2]}  playerIndex={players.length-2}  selectedCards={selectedCards} 
                 handleCardClick={handleCardClick} 
                 handlePlaySelected={handlePlaySelected} 
-                handlePickUpPile={handlePickUpPile} />
+                handlePickUpPile={handlePickUpPile} 
+                revealCardsIsChecked={revealCardsIsChecked} />
               </div>
             </div>
             <div className="row justify-content-center table-sub-row ">
@@ -211,7 +228,8 @@ function Row2({ pile, players, playerIndex, UpPile, selectedCards, handleCardCli
                 player={players[players.length-1]}  playerIndex={players.length-1}  selectedCards={selectedCards} 
                 handleCardClick={handleCardClick} 
                 handlePlaySelected={handlePlaySelected} 
-                handlePickUpPile={handlePickUpPile} />
+                handlePickUpPile={handlePickUpPile} 
+                revealCardsIsChecked={revealCardsIsChecked} />
               </div>
             </div>
           </div>
@@ -221,7 +239,7 @@ function Row2({ pile, players, playerIndex, UpPile, selectedCards, handleCardCli
 }
 
 function Row3({ pile, players, playerIndex, handlePickUpPile, selectedCards, handleCardClick, handlePlaySelected, moveLog, gameOver, handleClosePopup, 
-  showSettins, handleNewRound, showSettings, handleCloseSettings}) {
+  showSettins, handleNewRound, showSettings, handleCloseSettings, revealCardsIsChecked }) {
 
   return (
     <div className="row justify-content-center cardtable-bottom">
@@ -242,7 +260,7 @@ function Row3({ pile, players, playerIndex, handlePickUpPile, selectedCards, han
           handlePlaySelected={handlePlaySelected}
           handlePickUpPile={handlePickUpPile}
           handleNewRound={handleNewRound}
-        />
+          revealCardsIsChecked={revealCardsIsChecked} />
       </div>
       <div className="col-3 ">
         <div className='scores'>

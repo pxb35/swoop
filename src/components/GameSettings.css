@@ -27,3 +27,13 @@ div.number-of-players.section {
 .game-buttons button {
     margin-right: 1rem;
 }
+
+.version-date {
+    bottom: 5px;
+    right: 5px;
+    position: absolute;
+}
+
+.form-check-label {
+    margin-left: 1rem;
+}
