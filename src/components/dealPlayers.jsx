@@ -58,7 +58,7 @@ export function dealPlayers(deck, numPlayers, interactivePlayers, settings) {
         gamePlayers[i]['hand'].sort((a, b) => a.rank - b.rank);
     }
 
-    
+    /*
     //----------  added this to test ---------
     cardIndex = 0;
     for (let i = 0; i < numPlayers; i++) {
@@ -75,7 +75,7 @@ export function dealPlayers(deck, numPlayers, interactivePlayers, settings) {
         }
     }
     // ------- end of test section ----------
-    
+    */
    
     return gamePlayers;
 }
