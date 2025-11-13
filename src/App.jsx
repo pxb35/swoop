@@ -28,7 +28,7 @@ export default function App() {
   // Game state
   const [players, setPlayers] = useState([]);
   const [pile, setPile] = useState([]);
-  const [moveLog, setMoveLog] = useState([]);
+  const [moveLog, setMoveLog] = useState([0]);
   const [turnIndex, setTurnIndex] = useState(0);
   const [turnNumber, setTurnNumber] = useState(0);
   const [selectedCards, setSelectedCards] = useState([]);
@@ -59,6 +59,8 @@ export default function App() {
     //console.log([`Game started. Player ${firstPlayer} begins.`]);
     setTurnIndex(firstPlayer);
     setTurnNumber(firstPlayer);
+
+    setPile([]);
 
   }, []);
   
