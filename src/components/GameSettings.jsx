@@ -193,7 +193,7 @@ export default function GameSettings(params) {
               </label>
             </div>
             <div className='version-date'>
-              Nov 12, 2025
+              Nov 16, 2025
             </div>
             </Offcanvas.Body>
           </Offcanvas>

@@ -36,3 +36,10 @@ to deploy on github pages
 - On github (on the web), make the repository public (at the bottom of Settings -> General)
 - On settings->pages
 - select 'deploy from branch' and select gh-pages as the branch and select save
+
+
+To run from another device on the home network.
+
+  npm run dev -- --host
+
+The local URL will be listed as the second network item ('http://192.168.0.135:5173/swoop/', for example)
