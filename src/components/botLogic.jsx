@@ -91,7 +91,7 @@ function scoreGroup(group, pileHistory, players, playerIndex) {
 
   score += group.length * (isHigh ? 15 : isLow ? 10 : isSwoop ? 0 : 12);
   reasons.push(`Playing ${group.length} card(s) of rank ${rank}. total score ${score}`);
-
+  
   score += rank === 13 ? 0 : ((pileHistory.length === 0 ? rank : 12 - (pileHistory[0].rank - rank)));
   reasons.push(`Rank difference from pile top. total score ${score}`);
 
@@ -141,7 +141,7 @@ function scoreGroup(group, pileHistory, players, playerIndex) {
     reasons.push(`Playing swoop first when 2 cards left. total score ${score}`);
   }
 
- console.log(reasons);
+  console.log(reasons);
 
  return { score, reasons };
 }

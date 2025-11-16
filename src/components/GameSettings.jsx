@@ -29,6 +29,7 @@ export default function GameSettings(params) {
       revealCards:    params.revealCardsIsChecked
     }
     localStorage.setItem('settings', JSON.stringify(newSettings));
+    setSaved(true);
   }
 
       const storedSettings = getSettings();
@@ -42,7 +43,7 @@ export default function GameSettings(params) {
       const [playerName6, setPlayerName6] = useState(storedSettings.playerName6);
       const [playerName7, setPlayerName7] = useState(storedSettings.playerName7);
       const [playerName8, setPlayerName8] = useState(storedSettings.playerName8);
-
+      const [saved, setSaved] = useState(true);
 /*
       const [saveSettings, setSaveSettings] = useState(false);
       
@@ -80,32 +81,32 @@ export default function GameSettings(params) {
             <Offcanvas.Body>
               <div className="number-of-players section">
                 <p className="settings label">Number of Players</p>
-                <input type="radio" className="btn-check-sm" name="options-players" id="players-2" autoComplete="off" value="option-2" checked={playerOption === 'option-2'} 
-                      onChange={(e) => setPlayerOption(e.target.value)} />
+                <input type="radio" className="btn-check" name="options-players" id="players-2" autoComplete="off" value="option-2" checked={playerOption === 'option-2'} 
+                      onChange={(e) => {setPlayerOption(e.target.value); setSaved(false); } } />
                 <label className="btn" htmlFor="players-2">2</label>
 
                 <input type="radio" className="btn-check" name="options-players" id="players-3" autoComplete="off" value="option-3" checked={playerOption === 'option-3'} 
-                      onChange={(e) => setPlayerOption(e.target.value)} />
+                     onChange={(e) => {setPlayerOption(e.target.value); setSaved(false); } } />
                 <label className="btn" htmlFor="players-3">3</label>
 
                 <input type="radio" className="btn-check" name="options-players" id="players-4" autoComplete="off" value="option-4" checked={playerOption === 'option-4'} 
-                      onChange={(e) => setPlayerOption(e.target.value)} />
+                      onChange={(e) => {setPlayerOption(e.target.value); setSaved(false); } } />
                 <label className="btn" htmlFor="players-4">4</label>
 
                 <input type="radio" className="btn-check" name="options-players" id="players-5" autoComplete="off" value="option-5" checked={playerOption === 'option-5'}
-                      onChange={(e) => setPlayerOption(e.target.value)} />
+                      onChange={(e) => {setPlayerOption(e.target.value); setSaved(false); } } />
                 <label className="btn" htmlFor="players-5">5</label>
 
                 <input type="radio" className="btn-check" name="options-players" id="players-6" autoComplete="off" value="option-6" checked={playerOption === 'option-6'} 
-                      onChange={(e) => setPlayerOption(e.target.value)} />
+                      onChange={(e) => {setPlayerOption(e.target.value); setSaved(false); } } />
                 <label className="btn" htmlFor="players-6">6</label>
 
                 <input type="radio" className="btn-check" name="options-players" id="players-7" autoComplete="off" value="option-7" checked={playerOption === 'option-7'} 
-                      onChange={(e) => setPlayerOption(e.target.value)} />
+                      onChange={(e) => {setPlayerOption(e.target.value); setSaved(false); } } />
                 <label className="btn" htmlFor="players-7">7</label>
 
                 <input type="radio" className="btn-check" name="options-players" id="players-8" autoComplete="off" value="option-8" checked={playerOption === 'option-8'} 
-                      onChange={(e) => setPlayerOption(e.target.value)} />
+                      onChange={(e) => {setPlayerOption(e.target.value); setSaved(false); } } />
                 <label className="btn" htmlFor="players-8">8</label>
             </div>
             <div className="player-names section">
@@ -114,56 +115,56 @@ export default function GameSettings(params) {
               <div className="input-group mb-3">
                   <span className="input-group-text" id="player-name-1">Player 1</span>
                   <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="player-name-1" 
-                          onChange={(e) => setPlayerName1(e.target.value)} value={playerName1} />
+                          onChange={(e) => {setPlayerName1(e.target.value); setSaved(false); } } value={playerName1} />
               </div>
 
               <div className="input-group mb-3">
                   <span className="input-group-text" id="player-name-2">Player 2</span>
                   <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="player-name-2" 
-                        onChange={(e) => setPlayerName2(e.target.value)} value={playerName2} />
+                        onChange={(e) => {setPlayerName2(e.target.value); setSaved(false); } } value={playerName2} />
               </div>
 
               <div className="input-group mb-3">
                   <span className="input-group-text" id="player-name-3">Player 3</span>
                   <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="player-name-3" 
-                        onChange={(e) => setPlayerName3(e.target.value)} value={playerName3} />
+                        onChange={(e) => {setPlayerName3(e.target.value); setSaved(false); } } value={playerName3} />
               </div>
 
               <div className="input-group mb-3">
                   <span className="input-group-text" id="player-name-4">Player 4</span>
                   <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="player-name-4" 
-                        onChange={(e) => setPlayerName4(e.target.value)} value={playerName4} />
+                        onChange={(e) => {setPlayerName4(e.target.value); setSaved(false); } } value={playerName4} />
               </div>
 
               <div className="input-group mb-3">
                   <span className="input-group-text" id="player-name-5">Player 5</span>
                   <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="player-name-5" 
-                        onChange={(e) => setPlayerName5(e.target.value)} value={playerName5} />
+                        onChange={(e) => {setPlayerName5(e.target.value); setSaved(false); } } value={playerName5} />
               </div>
 
               <div className="input-group mb-3">
                   <span className="input-group-text" id="player-name-6">Player 6</span>
                   <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="player-name-6" 
-                        onChange={(e) => setPlayerName6(e.target.value)} value={playerName6} />
+                        onChange={(e) => {setPlayerName6(e.target.value); setSaved(false); } } value={playerName6} />
               </div>
 
               <div className="input-group mb-3">
                   <span className="input-group-text" id="player-name-7">Player 7</span>
                   <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="player-name-7" 
-                        onChange={(e) => setPlayerName7(e.target.value)} value={playerName7} />
+                        onChange={(e) => {setPlayerName7(e.target.value); setSaved(false); } } value={playerName7} />
               </div>
 
               <div className="input-group mb-3">
                   <span className="input-group-text" id="player-name-8">Player 8</span>
                   <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="player-name-8" 
-                        onChange={(e) => setPlayerName8(e.target.value)} value={playerName8} />
+                        onChange={(e) => {setPlayerName8(e.target.value); setSaved(false); } } value={playerName8} />
               </div>
             </div>
 
             <div className="row justify-contents-left settings-buttons">
-              <button className="btn btn-primary col-3"
+              <button className={"btn btn-primary col-3" + (saved ? " disabled " : " ")}
                           onClick={() => handleSave()}>
-                      save
+                      {"save" + (saved ? "d" : "")}
               </button>
               <button className="btn btn-primary col-3"
                           onClick={() => handleClose()}>
@@ -185,7 +186,7 @@ export default function GameSettings(params) {
                     type="checkbox"   
                     id="reveal-cards"
                     checked={params.revealCardsIsChecked}
-                    onChange={(e) => handleRevealOptionChange(e)}
+                    onChange={(e) => {handleRevealOptionChange(e); setSaved(false); } }
                />
               <label className="form-check-label" htmlFor="reveal-cards" >
                 Reveal cards at the end of the round

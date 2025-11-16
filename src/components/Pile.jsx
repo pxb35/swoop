@@ -3,14 +3,14 @@ import './Pile.css';
 
 export default function Pile({ pile, UpPile, players, playerIndex, selectedCards, handlePickUpPile }) {
   let revealCardArr = [];
-  if (players[playerIndex].mystery) {
+  if (players && players[playerIndex].mystery && selectedCards) {
     revealCardArr = players[playerIndex].mystery.filter(c => selectedCards.includes(c));
   }
   
   return (
     <>
     <div className="pile-button row">
-      <div className={"pick-up col-12" + (pile && pile.length> 0 && players && players[playerIndex].type === "human" ? ' button-visible' : '')}>
+      <div className={"pick-up col-12" + (pile && pile.length > 0 && players && players[playerIndex].type === "human" ? ' button-visible' : '')}>
         <button className="btn btn-primary" onClick={() => handlePickUpPile(playerIndex, revealCardArr)}>Pick&nbsp;Up&nbsp;Pile</button>
       </div>
     </div> 

@@ -1,31 +1,24 @@
     import React, { useState } from 'react';
     import { Modal, Button } from 'react-bootstrap';
 
-    export default function BootstrapModal () {
-      const [show, setShow] = useState(false);
+    export default function BootstrapModal (title, body) {
+      const [showModal, setShowModal] = useState(false);
 
-      const handleClose = () => setShow(false);
-      const handleShow = () => setShow(true);
+      const handleClose = () => setShowModal(false);
+      const handleShow = () => setShowModal(true);
 
       return (
         <>
-          <Button variant="primary" onClick={handleShow}>
-            Launch demo modal
-          </Button>
-
-          <Modal show={show} onHide={handleClose}>
+          <Modal show={showModal} onHide={handleClose}>
             <Modal.Header closeButton>
-              <Modal.Title>Modal Heading</Modal.Title>
+              <Modal.Title>{title}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              This is the content of your modal popup. You can put any React components or HTML here.
+              {body}
             </Modal.Body>
             <Modal.Footer>
               <Button variant="secondary" onClick={handleClose}>
                 Close
-              </Button>
-              <Button variant="primary" onClick={handleClose}>
-                Save Changes
               </Button>
             </Modal.Footer>
           </Modal>

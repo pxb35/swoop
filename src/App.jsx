@@ -16,7 +16,7 @@ import FullscreenComponent from './components/FullScreenComponent';
 
 let numberOfPlayers = 4;
 const interactivePlayers = [0]; // Only the first player is human
-const turnDelay = 500;
+const turnDelay = 750;
 let cntr = 0;
 let firstPlayer = 0;
 let duplicateRun = false;
@@ -37,6 +37,7 @@ export default function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [ignoreEvents, setIgnoreEvents] = useState(false);
   const [revealCardsIsChecked, setRevealCardsIsChecked] = useState(false);
+  const [selectDisabled, setSelectDisabled] = useState(false);
 
   //const [showPopup, setShowPopup] = useState(false);
 
@@ -124,7 +125,7 @@ export default function App() {
     setPilePicked(false);
     if (move.action === 'pickup') {
       setPilePicked(true);
-      console.log('botlogic: ', move);
+      //console.log('botlogic: ', move);
       const updated = handlePickUpPile(turnIndex, move.cards);
       //return updated;
     } else if (move.action === 'play') {
@@ -153,7 +154,7 @@ export default function App() {
 
     const pileCopy = [...pile]; // snapshot before clearing
 
-    //console.log('Player ' + playerIndex.toString() + ' is picking up the pile');
+    console.log('Player ' + playerIndex.toString() + ' is picking up the pile');
     setMoveLog(prev => [...prev, 'Player ' + playerIndex.toString() + ' picked up the pile']);
     
     AnimatePickuPile(pileCopy, playerIndex);
@@ -188,6 +189,7 @@ export default function App() {
 
   // -- Player clicks on a card --
   const handleCardClick = (card, player) => {
+    if (selectDisabled) return;
 
     // no selecting another person's cards
     if (players[turnIndex] !== player) {
@@ -239,11 +241,11 @@ export default function App() {
       //console.log(dealtPlayers);
       setPlayers(dealtPlayers);
 
+      firstPlayer = Math.floor(Math.random() * numberOfPlayers);
+      
       setMoveLog([`Game started. Player ${firstPlayer} begins.`]);
       setIgnoreEvents(false);
   
-      const newFirstPlayer = Math.floor(Math.random() * numberOfPlayers);
-      
       setTurnIndex(firstPlayer);
       setTurnNumber(firstPlayer);
 
@@ -306,6 +308,7 @@ export default function App() {
       setTurnIndex(firstPlayer);
       setTurnNumber(firstPlayer);
     }
+    setPile([]);
   }
 
   // -- Player plays selected cards --
@@ -327,12 +330,12 @@ export default function App() {
       return;
     }
 
+    setSelectDisabled(true);
     setPilePicked(false);
     tossCardsOnPile(selectedCards, 'pileId');
     
     setTimeout(() => {
       updatePileAndPlayers();
-      
     }, turnDelay / .75);
   }
 
@@ -349,17 +352,19 @@ export default function App() {
         setPile(updatedPile);
         updatePlayers()
         setMoveLog(prev => [...prev, 'Swoop! The pile has been cleared!']);  
+        setSelectDisabled(false);
       }, turnDelay/.25);  
     } else {
       setPile(updatedPile);
-      updatePlayers(); 
+      updatePlayers();
+      setSelectDisabled(false);
     }   
   }
 
   const updatePlayers = () => {
       
     setMoveLog(prev => [...prev, 'Player ' + turnIndex + ' played ' + selectedCards.length.toString() + ' x ' + (selectedCards[0].rank === 13 ? 'swoop' : selectedCards[0].rank.toString())]);
-    //console.log('Player ' + turnIndex + ' played ' + selectedCards.length.toString() + ' x ' + (selectedCards[0].rank === 13 ? 'swoop' : selectedCards[0].rank.toString()));
+    console.log('Player ' + turnIndex + ' played ' + selectedCards.length.toString() + ' x ' + (selectedCards[0].rank === 13 ? 'swoop' : selectedCards[0].rank.toString()));
 
     // Update player hand and faceUp
     const updatedPlayers = [...players];
