@@ -379,7 +379,14 @@ export default function App() {
       for (let i=0; i<updatedPlayers.length; i++) {
         updatedPlayers[i].roundScore = playerScores.scores[i].roundScore;
         updatedPlayers[i].totalScore = playerScores.scores[i].totalScore;
-        if (playerScores.gameOver && playerScores.lowestPlayer === i) updatedPlayers[i].winner = true;
+        if (playerScores.gameOver && playerScores.lowestPlayer === i) {
+          updatedPlayers[i].winner = true;
+          gtag('event', 'games_completed', {
+            event_category: 'Game Counts',
+            event_label: 'Games Completed',
+            value: 1
+          });
+        }
       }
     } else {
       updatedPlayers[turnIndex] = currentPlayer;
