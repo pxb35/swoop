@@ -59,11 +59,9 @@ export function botTurn(pileHistory, players, playerIndex) {
   return { action: 'play', cards: options[0].cards };
 }
 
-function groupByRank(hand) {
-  return hand.reduce((acc, card) => {
+function groupByRank(mergedHand) {
+  return mergedHand.reduce((acc, card) => {
     acc[card.rank] = acc[card.rank] || [];
-    // don't group swoops
-    //if (card.rank !== 13 || acc[13] == undefined || acc[13].length === 0) acc[card.rank].push(card);
     acc[card.rank].push(card);
     return acc;
   }, {});
