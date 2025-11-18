@@ -1,5 +1,5 @@
 /* For smaller screens like phones, reduce the base font size */
-
+/*
 @media screen and (min-height: 200px) and  (max-height: 500px) {
     html {
     font-size:60%; 
@@ -35,7 +35,7 @@
     font-size:100%; 
   }
 }
-
+*/
 /*
 @media screen and (min-width: 480px) and (max-width: 560px) {
   html {

@@ -424,11 +424,13 @@ export default function tossCardsOnPile(cards, pileIdStr) {
     const DOMcard = document.getElementById(
       "card-" + cards[i].deckIndex.toString()
     );
-    moveDOMElement(
-      DOMcard,
-      { x: pileRect.left, y: pileRect.top },
-      Math.random() * 360 + 180
-    );
+    if (DOMcard) {
+      moveDOMElement(
+        DOMcard,
+        { x: pileRect.left, y: pileRect.top },
+        Math.random() * 360 + 180
+      );
+    }
   }
 }
 

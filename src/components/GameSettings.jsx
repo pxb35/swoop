@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Offcanvas from 'react-bootstrap/Offcanvas';
-import { Form } from 'react-bootstrap';
+import { Dropdown, Form } from 'react-bootstrap';
 import "./GameSettings.css";
+import { FaList } from 'react-icons/fa'; // For a generic list icon
     
+//import React from 'react';
+//import Dropdown from 'react-bootstrap/Dropdown';
+   
 export default function GameSettings(params) {
  
   const handleRevealOptionChange = (event) => {
@@ -12,7 +16,12 @@ export default function GameSettings(params) {
   };
 
   const [show, setShow] = useState(false);
-
+  const [showErrors, setShowErrors] = useState(false);
+  
+  const handleToggleShowErrors = () => {
+    setShowErrors(!showErrors);
+  }
+  
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const handleSave = () => {
@@ -44,35 +53,25 @@ export default function GameSettings(params) {
       const [playerName7, setPlayerName7] = useState(storedSettings.playerName7);
       const [playerName8, setPlayerName8] = useState(storedSettings.playerName8);
       const [saved, setSaved] = useState(true);
-/*
-      const [saveSettings, setSaveSettings] = useState(false);
-      
-      useEffect(() => {
-          if (saveSettings) {
-              
-            const newSettings = {
-              playerCount:    playerOption.split('-')[1],
-              playerName1:    playerName1,
-              playerName2:    playerName2,
-              playerName3:    playerName3,
-              playerName4:    playerName4,
-              playerName5:    playerName5,
-              playerName6:    playerName6,
-              playerName7:    playerName7,
-              playerName8:    playerName8
-            }
-            localStorage.setItem('settings', JSON.stringify(newSettings));
-            setSaveSettings(false);
-          }
-        }, [saveSettings]);
-  */      
+
       return (
         <>
-          <Button variant="primary" onClick={handleShow} className="settings">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-gear-fill" viewBox="0 0 16 16">
-            <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
-          </svg>
-          </Button>
+        <div className='dropdown-container' >
+        <Dropdown className="main-dropdown">
+          <Dropdown.Toggle variant="primary" id="dropdown-basic">
+            Settings&nbsp;
+          </Dropdown.Toggle>
+
+          <Dropdown.Menu>
+            <Dropdown.Item onClick={handleShow}>Settings</Dropdown.Item>
+            <Dropdown.Divider className='menu-divider'></Dropdown.Divider>
+            <Dropdown.Item onClick={() => params.handleNewRound(false)}>
+                New Round</Dropdown.Item>
+            <Dropdown.Item onClick={() => params.handleNewRound(true)}>
+                New Game</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+        </div>
 
           <Offcanvas show={show} onHide={handleClose}>
             <Offcanvas.Header closeButton>
@@ -160,6 +159,19 @@ export default function GameSettings(params) {
                         onChange={(e) => {setPlayerName8(e.target.value); setSaved(false); } } value={playerName8} />
               </div>
             </div>
+          
+            <div className="reveal-card-check">
+              <p className="settings label">Cards</p>
+              <input className="form-check-input" 
+                    type="checkbox"   
+                    id="reveal-cards"
+                    checked={params.revealCardsIsChecked}
+                    onChange={(e) => {handleRevealOptionChange(e); setSaved(false); } }
+               />
+              <label className="form-check-label" htmlFor="reveal-cards" >
+                Reveal cards at the end of the round
+              </label>
+            </div>
 
             <div className="row justify-contents-left settings-buttons">
               <button className={"btn btn-primary col-3" + (saved ? " disabled " : " ")}
@@ -171,33 +183,14 @@ export default function GameSettings(params) {
                       close
               </button>
             </div>        
-            <hr></hr>
-            <h4>Game Actions</h4>
-            <div className="row justify-contents-center game-buttons">
-              <button className="btn btn-primary col-4" onClick={() => params.handleNewRound(false)}>
-                new round
-              </button>
-              <button className="btn btn-primary col-4" onClick={() => params.handleNewRound(true)}>
-                new game
-              </button>
-            </div>
-            <div className="reveal-card=check">
-              <input className="form-check-input" 
-                    type="checkbox"   
-                    id="reveal-cards"
-                    checked={params.revealCardsIsChecked}
-                    onChange={(e) => {handleRevealOptionChange(e); setSaved(false); } }
-               />
-              <label className="form-check-label" htmlFor="reveal-cards" >
-                Reveal cards at the end of the round
-              </label>
-            </div>
-            <div className='version-date'>
+            <hr className="thin-break"></hr>
+            <div className='version-date' onClick={() => handleToggleShowErrors() }>
               Nov 16, 2025
             </div>
+            <CrashLogViewer showErrors={showErrors} ></CrashLogViewer>
             </Offcanvas.Body>
           </Offcanvas>
-        </>
+          </>
       );
     }
 
@@ -219,4 +212,14 @@ export default function GameSettings(params) {
 
         const storedSettings = localStorage.getItem('settings');
         return storedSettings ? JSON.parse(storedSettings) : defaultSettings;
+    }
+
+    function CrashLogViewer(params) {
+      const logs = JSON.parse(localStorage.getItem('swoopCrashLogs') || '[]');
+      return (
+        <div className={'error-log' + (params && params.showErrors ? ' error-log-visible' : '')} >
+          <h3>Crash Logs</h3>
+          <pre>{JSON.stringify(logs, null, 2)}</pre>
+        </div>
+      );
     }
