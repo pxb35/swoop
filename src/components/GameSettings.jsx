@@ -185,7 +185,7 @@ export default function GameSettings(params) {
             </div>        
             <hr className="thin-break"></hr>
             <div className='version-date' onClick={() => handleToggleShowErrors() }>
-              Nov 16, 2025
+              Nov 18, 2025
             </div>
             <CrashLogViewer showErrors={showErrors} ></CrashLogViewer>
             </Offcanvas.Body>

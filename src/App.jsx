@@ -374,6 +374,11 @@ export default function App() {
     currentPlayer.mystery = currentPlayer.mystery.filter(c => !selectedCards.includes(c));
     if (currentPlayer.hand.length === 0 && currentPlayer.faceUp.length === 0 && currentPlayer.mystery.length === 0) {
       // round over
+      gtag('event', 'rounds_completed', {
+            event_category: 'Game Counts',
+            event_label: 'Rounds Completed',
+            value: 1
+          });
       updatedPlayers[turnIndex] = currentPlayer;
       const playerScores = calculateScores(updatedPlayers);
       for (let i=0; i<updatedPlayers.length; i++) {

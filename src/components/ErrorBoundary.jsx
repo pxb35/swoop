@@ -26,6 +26,13 @@ export default class ErrorBoundary extends React.Component {
 }
 
 function logCrash(error, errorInfo) {
+    
+    gtag('event', 'errors_logged', {
+        event_category: 'Errors',
+        event_label: 'Errors Logged',
+        value: 1
+    });
+
   const crashReport = {
     timestamp: new Date().toISOString(),
     message: error?.message || 'Unknown error',

@@ -16,7 +16,7 @@ const GameOverPopup = ({ onClose, children, players, gameOver, handleNewRound })
           <Modal.Title>We Have a Winner</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <p>The player with the lowest totalscore when any player reaches 500 is the game winner.</p>
+              <p>The player with the lowest total score when any player reaches 500 is the game winner.</p>
               <h4 className="round-winner">{ players.filter((p) => p.roundScore === 0).length > 0 ? players.filter((p) => p.roundScore === 0)[0].name : "Nobody"} won the round.</h4>
               <h2 className="game-winner">{ players.filter((p) => p.winner).length > 0 ? players.filter((p) => p.winner)[0].name + " won the game!" : "Nobody has won the game yet"}</h2>
               <Scores players={players} />
