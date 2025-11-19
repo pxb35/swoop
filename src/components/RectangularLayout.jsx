@@ -250,7 +250,6 @@ function Row3({ pile, players, playerIndex, handlePickUpPile, selectedCards, han
         </div>
       </div>
       <div className="col-6 main-player">
-        <div className='row main-player-spacer'></div>
         <PlayerStatus
           player={players[0]}
           playerIndex={0}
