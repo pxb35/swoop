@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Offcanvas from 'react-bootstrap/Offcanvas';
+import RulesSummary from './RulesSummary';
 import { Dropdown, Form } from 'react-bootstrap';
 import "./GameSettings.css";
 import { FaList } from 'react-icons/fa'; // For a generic list icon
@@ -54,6 +55,15 @@ export default function GameSettings(params) {
       const [playerName8, setPlayerName8] = useState(storedSettings.playerName8);
       const [saved, setSaved] = useState(true);
 
+      let showRulesSummary = false;
+      const setShowRulesSummary = (value) => {
+        if (value === undefined) {
+          showRulesSummary = !showRulesSummary;
+        } else {
+          showRulesSummary = value;
+        } 
+      }
+
       return (
         <>
         <div className='dropdown-container' >
@@ -69,6 +79,9 @@ export default function GameSettings(params) {
                 New Round</Dropdown.Item>
             <Dropdown.Item onClick={() => params.handleNewRound(true)}>
                 New Game</Dropdown.Item>
+            <Dropdown.Divider className='menu-divider'></Dropdown.Divider>
+            <Dropdown.Item onClick={() => params.setShowRules(true)}>
+                Rules Summary</Dropdown.Item> 
           </Dropdown.Menu>
         </Dropdown>
         </div>
@@ -185,7 +198,7 @@ export default function GameSettings(params) {
             </div>        
             <hr className="thin-break"></hr>
             <div className='version-date' onClick={() => handleToggleShowErrors() }>
-              Nov 18, 2025
+              Nov 20, 2025
             </div>
             <CrashLogViewer showErrors={showErrors} ></CrashLogViewer>
             </Offcanvas.Body>
@@ -200,14 +213,15 @@ export default function GameSettings(params) {
 
         const defaultSettings = {
             playerCount:    4,
-            playerName1:    "me",
+            playerName1:    "you",
             playerName2:    "bot 1",
             playerName3:    "bot 2",
             playerName4:    "bot 3",
             playerName5:    "bot 4",
             playerName6:    "bot 5",
             playerName7:    "bot 6",
-            playerName8:    "bot 7"
+            playerName8:    "bot 7",
+            newUser:       true
         }
 
         const storedSettings = localStorage.getItem('settings');

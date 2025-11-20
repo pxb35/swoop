@@ -13,6 +13,7 @@ import { Button } from 'react-bootstrap';
 import Example from './components/Example';
 import GameSettings, { getSettings } from './components/GameSettings';
 import FullscreenComponent from './components/FullScreenComponent';
+import RulesSummary from './components/RulesSummary';
 
 let numberOfPlayers = 4;
 const interactivePlayers = [0]; // Only the first player is human
@@ -35,6 +36,7 @@ export default function App() {
   const [pilePicked, setPilePicked] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showRules, setShowRules] = useState(false);
   const [ignoreEvents, setIgnoreEvents] = useState(false);
   const [revealCardsIsChecked, setRevealCardsIsChecked] = useState(false);
   const [selectDisabled, setSelectDisabled] = useState(false);
@@ -49,6 +51,11 @@ export default function App() {
     if (settings) {
       numberOfPlayers = settings.playerCount;
       setRevealCardsIsChecked(settings.revealCards);
+      if (settings.newUser) {
+        setShowRules(true);
+        settings.newUser = false;
+        localStorage.setItem('settings', JSON.stringify(settings));
+      }
     }
     firstPlayer = Math.floor(Math.random() * numberOfPlayers);
     const deck = createDeck(numberOfPlayers);
@@ -441,11 +448,15 @@ export default function App() {
                         revealCardsIsChecked={revealCardsIsChecked}
                     />
             
-            <GameSettings handleNewRound={handleNewRound} 
+        <GameSettings handleNewRound={handleNewRound} 
                           setRevealCardsIsChecked={setRevealCardsIsChecked}
                           revealCardsIsChecked={revealCardsIsChecked}
-                     />           
-      
+                          showRules={showRules}
+                          setShowRules={setShowRules}
+                    />
+
+        <RulesSummary setShowRules={setShowRules} showRules={showRules}
+                    />
       </div>
     );
   }

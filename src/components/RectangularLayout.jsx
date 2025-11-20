@@ -269,10 +269,11 @@ function Row3({ pile, players, playerIndex, handlePickUpPile, selectedCards, han
           />
         </div>
       </div>
-        <div className={'game-over' + (gameOver ? ' popup-visible' : '')}>
-          <GameOverPopup gameOver={gameOver} onClose={handleClosePopup} players={players} handleNewRound={handleNewRound} ></GameOverPopup>
-        </div>
+      
+      <div className={'game-over' + (gameOver ? ' popup-visible' : '')}>
+        <GameOverPopup gameOver={gameOver} onClose={handleClosePopup} players={players} handleNewRound={handleNewRound} ></GameOverPopup>
       </div>
+    </div>
 
   );
 }
