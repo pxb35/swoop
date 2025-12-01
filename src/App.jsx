@@ -40,7 +40,8 @@ export default function App() {
   const [ignoreEvents, setIgnoreEvents] = useState(false);
   const [revealCardsIsChecked, setRevealCardsIsChecked] = useState(false);
   const [selectDisabled, setSelectDisabled] = useState(false);
-
+  const [playAllowed, setPlayAllowed] = useState(true);
+  const [pickupAllowed, setPickupAllowed] = useState(true);
   //const [showPopup, setShowPopup] = useState(false);
 
   // -- initialize deck and players -runs once --
@@ -157,7 +158,8 @@ export default function App() {
   console.log(playerIndex);
   console.log(addToHand);
 
-    if (pile.length === 0) return;
+    if (!pickupAllowed || pile.length === 0) return;
+    setPickupAllowed(false);
 
     const pileCopy = [...pile]; // snapshot before clearing
 
@@ -187,6 +189,7 @@ export default function App() {
         
         setSelectedCards([]);
         setPilePicked(true);
+        setPickupAllowed(true);
 
         //console.log(updated);
         return updated;
@@ -321,7 +324,8 @@ export default function App() {
   // -- Player plays selected cards --
   const handlePlaySelected = () => {
     
-    if (selectedCards.length === 0) return;
+    if ((players[turnIndex].type === "human" && !playAllowed) || selectedCards.length === 0) return;
+    setPlayAllowed(false);
 
     const top = pile[pile.length - 1];
     const legal = selectedCards.every(c => !top || c.rank <= top.rank || c.rank === 13);
@@ -329,11 +333,13 @@ export default function App() {
 
     if (!legal) {
       setMoveLog(prev => [...prev, `Invalid card selection`]);
+      setPlayAllowed(true);
       return;
     }
 
     if (!sameRank) {
       setMoveLog(prev => [...prev, `All selected cards must be the same rank`]);
+      setPlayAllowed(true);
       return;
     }
 
@@ -360,11 +366,13 @@ export default function App() {
         updatePlayers()
         setMoveLog(prev => [...prev, 'Swoop! The pile has been cleared!']);  
         setSelectDisabled(false);
+        setPlayAllowed(true);
       }, turnDelay/.25);  
     } else {
       setPile(updatedPile);
       updatePlayers();
       setSelectDisabled(false);
+      setPlayAllowed(true);
     }   
   }
 

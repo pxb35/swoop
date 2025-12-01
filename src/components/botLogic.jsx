@@ -87,57 +87,75 @@ function scoreGroup(group, pileHistory, players, playerIndex) {
   const willSwoop = matchingHistoryCount + group.length >= 4;
   const isSwoop = rank === 13;
 
-  score += group.length * (isHigh ? 15 : isLow ? 10 : isSwoop ? 0 : 12);
-  reasons.push(`Playing ${group.length} card(s) of rank ${rank}. total score ${score}`);
   
-  score += rank === 13 ? 0 : ((pileHistory.length === 0 ? rank : 12 - (pileHistory[0].rank - rank)));
-  reasons.push(`Rank difference from pile top. total score ${score}`);
+  if (!isSwoop) {
 
-  if (isSwoop) {
+    // groups of non-swoop cards
+
+    // get rid of high cards first
+    score += group.length * (isHigh ? 15 : isLow ? 10 : 12);
+  
+    // get rid of the highest cards possible
+    score += ((pileHistory.length === 0 ? rank : 12 - (pileHistory[0].rank - rank)));
+    reasons.push(`Rank difference from pile top. total score ${score}`);
+
+    // if the group will swoop, give it a big boost
+    if (willSwoop) {
+      score += 30;
+      // extra if the swoop uses the pile (as opposed to having all swooped cards in hand)
+      if (group.length < 4) score += 20;
+      reasons.push(`Triggers a swoop. total score ${score}`);
+    }
+
+    // don't play low cards as a group - save them to protect against having to take the pile
+    if (isLow && group.length > 1) {
+      // ok when card count is low
+      if (players.every(p => p.faceUp.length + p.hand.length + p.mystery.length > 4)) {
+        score -= 4 * group.length * (4 - rank)
+        reasons.push(`Using more than one low card when all players have more than 4 cards. total score ${score}`);
+      } 
+    }
+
+    // if the next player has only a few cards, block them from going out
+    if (nextPlayerCardCount <= 3 && (nextPlayer.faceUp.length === 0 || nextPlayer.faceUp.every(c => c.rank > rank))) {
+      score += (15 - (rank * 2)) * (4-nextPlayerCardCount);
+      reasons.push(`Blocking next player from going out. total score ${score}`);
+    }
+
+    // don't give the next player a swoop oportunity
+    if (group.length < 4 && !willSwoop && nextPlayer.faceUp.filter(c => c.rank === rank).length + group.length + matchingHistoryCount >= 4) {
+      score -= 15;
+      reasons.push(`Blocking next player from getting a swoop. total score ${score}`);
+    } else if (group.length < 4 && !willSwoop &&  nextPlayer.faceUp.filter(c => c.rank === rank).length + group.length + matchingHistoryCount >= 3) {
+      score -= nextPlayer.hand.length;
+      reasons.push(`Blocking next player from getting a potential swoop. total score ${score}`);
+    }
+
+  } else {
+    
+    // swoop card scoring
+  
+    // play your swoop card first when you have 2 cards left
+    if (cardCnt === 2) {
+      score += 100;
+      reasons.push(`Playing swoop first when 2 cards left. total score ${score}`);
+    }
+
+    // swoop should be played one at a time
     score += 5;
     if (group.length > 1) {
       score -= group.length * 10;
     }
     reasons.push(`Playing swoop card. total score ${score}`);
+
+    // if someone has only a few cards, get rid of the swoop cards: 50 points against you if they are in your hand
+    if (players.filter(p => p.faceUp.length + p.hand.length + p.mystery.length < 5).length > 0 ) {
+      score += 15;
+      reasons.push(`Getting rid of swoop when a player has less than 5 cards. total score ${score}`);
+    }
   }
 
-  if (willSwoop && !isSwoop) {
-    score += 20;
-    // extra if the swoop uses the pile (as opposed to having all swooped cards in hand)
-    if (group.length < 4) score += 20;
-    reasons.push(`Triggers a swoop. total score ${score}`);
-  }
-
-  if (isLow && group.length > 1) {
-    // ok when card count is low
-    if (players.every(p => p.faceUp.length + p.hand.length + p.mystery.length > 4)) {
-      score -= 4 * group.length * (4 - rank)
-      reasons.push(`Using more than one low card when all players have more than 4 cards. total score ${score}`);
-    } 
-  }
-
-  if (isSwoop && players.filter(p => p.faceUp.length + p.hand.length + p.mystery.length < 4).length > 0 ) {
-    score += 15;
-    reasons.push(`Getting rid of swoop when a player has less than 4 cards. total score ${score}`);
-  }
-
-  if (nextPlayerCardCount <= 3 && (nextPlayer.faceUp.length === 0 || nextPlayer.faceUp.every(c => c.rank > rank))) {
-    score += (15 - (rank * 2)) * (4-nextPlayerCardCount);
-    reasons.push(`Blocking next player from going out. total score ${score}`);
-  }
-
-  if (group.length < 4 && nextPlayer.faceUp.filter(c => c.rank === rank).length + group.length + matchingHistoryCount >= 4) {
-    score -= 15;
-    reasons.push(`Blocking next player from getting a swoop. total score ${score}`);
-  } else if (group.length < 4 && nextPlayer.faceUp.filter(c => c.rank === rank).length + group.length + matchingHistoryCount >= 3) {
-    score -= nextPlayer.hand.length;
-    reasons.push(`Blocking next player from getting a potential swoop. total score ${score}`);
-  }
-
-  if (isSwoop && cardCnt === 2) {
-    score += 100;
-    reasons.push(`Playing swoop first when 2 cards left. total score ${score}`);
-  }
+  reasons.push(`Scoring ${group.length} card(s) of rank ${rank}. total score ${score}`);
 
   console.log(reasons);
 
