@@ -47,6 +47,12 @@ to deploy on github pages
 - On settings->pages
 - select 'deploy from branch' and select gh-pages as the branch and select save
 
+- note that you may have problems with the image references. You can fix this by importing the images
+
+        import logo from './assets/logo.png';
+        <img src={logo} />
+
+
 
 To run from another device on the home network.
 
