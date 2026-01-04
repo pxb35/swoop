@@ -15,7 +15,17 @@ Basic React App instructions:
 
 to deploy on github pages
 
-- within VS Code, modify your vite.config.js (or vite.config.ts) file to include the base option. This is crucial for ensuring all assets are correctly referenced when served from a subfolder on GitHub Pages. Replace YOUR_REPOSITORY_NAME with the actual name of your GitHub repository.
+- within VS Code, modify your vite.config.js (or vite.config.ts) file to include the base option. This is crucial for ensuring all assets are correctly referenced when served from a subfolder on GitHub Pages. Replace YOUR_REPOSITORY_NAME with the actual name of your GitHub repository. For example:
+
+          import { defineConfig } from "vite";
+          import react from "@vitejs/plugin-react";
+
+          // https://vite.dev/config/
+          export default defineConfig({
+            base: "/swoop/", // <-- add this line
+            plugins: [react()],
+          });
+
 - Install the gh-pages package:
 
       npm install gh-pages --save-dev
